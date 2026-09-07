@@ -1,8 +1,8 @@
 <<<<<<< HEAD
-# CookMate 🍳
+# FoodCHART 🍳
 > Your Master Offline Culinary Companion
 
-CookMate is an offline-first recipe and cooking companion Flutter application engineered to the **Flutter Production Architecture Standard** (Feature-First Clean Architecture + Riverpod + GoRouter + SQLite Local Persistence).
+foodCHART is an offline-first recipe and cooking companion Flutter application engineered to the **Flutter Production Architecture Standard** (Feature-First Clean Architecture + Riverpod + GoRouter + SQLite Local Persistence).
 
 ---
 
@@ -23,7 +23,7 @@ CookMate is an offline-first recipe and cooking companion Flutter application en
 
 ## 🏛️ Architecture Overview
 
-CookMate is structured with **Feature-First Clean Architecture**:
+foodCHART is structured with **Feature-First Clean Architecture**:
 
 ```
 lib/
@@ -100,6 +100,6 @@ flutter test
 - [Requirements & Feature Scope](docs/requirements.md)
 - [Architecture Decision Records (ADRs)](docs/decisions.md)
 =======
-# CookMate
-cook mate is a user friend recipes  app used for making new recipes 
+# FoodCHART
+FoodCHART is a user friend recipes  app used for making new recipes 
 >>>>>>> 72515bb22baafc19e863b111e0a890ae60fe7f9b
