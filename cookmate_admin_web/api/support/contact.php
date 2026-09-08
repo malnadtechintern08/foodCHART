@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Contact Us Message Submission Endpoint
+ * Food CHART REST API - Contact Us Message Submission Endpoint
  * 
  * POST /api/support/contact.php
  */
@@ -71,7 +71,7 @@ try {
     http_response_code(201);
     echo json_encode([
         'status' => 'success',
-        'message' => 'Thank you! Your message has been received. The CookMate support team will review it shortly.',
+        'message' => 'Thank you! Your message has been received. The Food CHART support team will review it shortly.',
         'data' => [
             'inquiry_id' => $inquiryId,
             'name' => $name,

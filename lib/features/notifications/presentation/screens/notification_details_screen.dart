@@ -21,13 +21,15 @@ class NotificationDetailsScreen extends ConsumerWidget {
   void _handleAction(BuildContext context, NotificationModel notif) {
     if (notif.relatedType == 'recipe' && notif.relatedId != null && notif.relatedId!.isNotEmpty) {
       context.push('/recipe/${notif.relatedId}');
-    } else if (notif.relatedType == 'recipe_submission') {
+    } else if (notif.relatedType == 'recipe_submission' || notif.relatedId == 'submissions') {
       context.pushNamed(RouteNames.mySubmissions);
     } else if (notif.relatedType == 'feature') {
       if (notif.relatedId == 'hashtags' || notif.relatedId == 'search') {
         context.pushNamed(RouteNames.search);
+      } else if (notif.relatedId == 'submissions') {
+        context.pushNamed(RouteNames.mySubmissions);
       } else {
-        context.pushNamed(RouteNames.explore);
+        context.goNamed(RouteNames.explore);
       }
     } else {
       context.pop();
@@ -52,6 +54,24 @@ class NotificationDetailsScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Delete Notification',
+            icon: const Icon(Icons.delete_outline_rounded, size: 22, color: AppColors.error),
+            onPressed: () {
+              ref.read(notificationsProvider.notifier).deleteNotification(notificationId);
+              context.pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Notification deleted.'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: asyncNotif.when(
         data: (notif) => _buildContent(context, notif, isDark),
@@ -124,7 +144,7 @@ class NotificationDetailsScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: notif.type.color.withOpacity(0.15),
+                        color: notif.type.color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
@@ -175,9 +195,29 @@ class NotificationDetailsScreen extends ConsumerWidget {
                     color: isDark ? const Color(0xFFE0E0E0) : const Color(0xFF333333),
                   ),
                 ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 13,
+                      color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Received: ${notif.fullFormattedTime}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
+
 
           // Optional Image Card
           if (notif.image != null && notif.image!.isNotEmpty) ...[

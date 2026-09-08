@@ -138,7 +138,7 @@ class SubmissionRemoteDataSourceImpl implements SubmissionRemoteDataSource {
         Uri.parse(AppConstants.apiSessionEndpoint),
         method: 'POST',
         body: jsonEncode({
-          'display_name': prefs.getString(AppConstants.keyUserDisplayName) ?? 'CookMate Chef',
+          'display_name': prefs.getString(AppConstants.keyUserDisplayName) ?? 'Food CHART Chef',
           'device_info': Platform.operatingSystem,
           if (token != null && !token.startsWith('cm_')) 'auth_token': token,
         }),

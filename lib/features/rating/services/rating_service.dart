@@ -176,7 +176,7 @@ class RatingService {
 
   /// Attempts to open Google Play Store listing via in_app_review.
   /// Returns `true` on success, `false` on failure.
-  Future<bool> openPlayStoreReview({String appPackageName = 'com.cookmate.cookmate'}) async {
+  Future<bool> openPlayStoreReview({String appPackageName = 'com.food.chart'}) async {
     try {
       await _inAppReview.openStoreListing(appStoreId: appPackageName);
       return true;

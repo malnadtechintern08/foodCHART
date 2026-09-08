@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - List Tags
+ * Food CHART REST API - List Tags
  * 
  * GET /api/tags/index.php?q=...&limit=50&page=1&sort=usage
  */

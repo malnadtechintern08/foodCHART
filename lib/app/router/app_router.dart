@@ -302,28 +302,20 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         path: RoutePaths.notifications,
         name: RouteNames.notifications,
-        pageBuilder: (context, state) => MaterialPage<void>(
-          key: ValueKey('notifications_${state.uri}_${identityHashCode(state)}'),
-          name: state.name,
-          child: const NotificationsScreen(),
-        ),
+        builder: (context, state) => const NotificationsScreen(),
       ),
 
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: RoutePaths.notificationDetails,
         name: RouteNames.notificationDetails,
-        pageBuilder: (context, state) {
+        builder: (context, state) {
           final idStr = state.pathParameters['id'] ?? '0';
           final id = int.tryParse(idStr) ?? 0;
           final notif = state.extra as NotificationModel?;
-          return MaterialPage<void>(
-            key: ValueKey('notif_details_${state.uri}_${identityHashCode(state)}'),
-            name: state.name,
-            child: NotificationDetailsScreen(
-              notificationId: id,
-              initialNotification: notif,
-            ),
+          return NotificationDetailsScreen(
+            notificationId: id,
+            initialNotification: notif,
           );
         },
       ),

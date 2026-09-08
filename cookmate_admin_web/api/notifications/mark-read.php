@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Mark Single Notification As Read
+ * Food CHART API - Mark Single Notification As Read
  * POST /api/notifications/mark-read.php
  * Body: { "notification_id": 123 }
  */
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $pdo = get_db_connection();
 ensure_notifications_tables_exist($pdo);
-$user = get_authenticated_user($pdo, false, true, 'CookMate Foodie');
+$user = get_authenticated_user($pdo, false, true, 'Food CHART Foodie');
 $userId = $user ? (int)$user['id'] : 1;
 
 $raw = file_get_contents('php://input');

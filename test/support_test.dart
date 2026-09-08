@@ -9,7 +9,7 @@ void main() {
       expect(policy.id, 'privacy-policy');
       expect(policy.title, 'Privacy Policy');
       expect(policy.slug, 'privacy-policy');
-      expect(policy.content, contains('CookMate Privacy Policy'));
+      expect(policy.content, contains('Food CHART Privacy Policy'));
       expect(policy.content, contains('offline-first'));
       expect(policy.isPublished, isTrue);
       expect(policy.meta['contact_email'], 'privacy@cookmate.app');

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Get User's Own Recipe Submissions
+ * Food CHART API - Get User's Own Recipe Submissions
  * GET /api/recipe-submissions/my-submissions.php
  */
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate - Recipe Submissions & Moderation Database Migration
+ * Food CHART - Recipe Submissions & Moderation Database Migration
  * Runs SQL schema migration, alters recipes table, creates uploads folders.
  */
 
@@ -107,7 +107,7 @@ if ($allTablesPresent) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Submissions Migration • CookMate</title>
+    <title>Recipe Submissions Migration • Food CHART</title>
     <style>
         body { background: #0E0E0E; color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; margin: 0; }
         .container { max-width: 760px; margin: 0 auto; background: #1A1A1A; border: 1px solid #333; border-radius: 14px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }

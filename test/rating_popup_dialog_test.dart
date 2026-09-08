@@ -74,9 +74,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Check title and description
-      expect(find.text('Enjoying CookMate? 🍳❤️'), findsOneWidget);
+      expect(find.text('Enjoying Food CHART? 🍳❤️'), findsOneWidget);
       expect(
-        find.text("We hope you're enjoying CookMate. Your feedback helps us make the app better!"),
+        find.text("We hope you're enjoying Food CHART. Your feedback helps us make the app better!"),
         findsOneWidget,
       );
 
@@ -101,9 +101,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should show 4-5 stars message
-      expect(find.text("We're glad you're enjoying CookMate! ❤️"), findsOneWidget);
+      expect(find.text("We're glad you're enjoying Food CHART! ❤️"), findsOneWidget);
       expect(find.byKey(const Key('rate_playstore_button')), findsOneWidget);
-      expect(find.text('⭐ Rate CookMate on Play Store'), findsOneWidget);
+      expect(find.text('⭐ Rate Food CHART on Play Store'), findsOneWidget);
 
       // Tap Rate us on Play Store
       await tester.tap(find.byKey(const Key('rate_playstore_button')));
@@ -123,7 +123,7 @@ void main() {
       await tester.tap(find.byKey(const Key('star_4')));
       await tester.pumpAndSettle();
 
-      expect(find.text("We're glad you're enjoying CookMate! ❤️"), findsOneWidget);
+      expect(find.text("We're glad you're enjoying Food CHART! ❤️"), findsOneWidget);
       expect(find.byKey(const Key('rate_playstore_button')), findsOneWidget);
     });
 
@@ -142,7 +142,7 @@ void main() {
 
       // Should show 1-3 stars message
       expect(
-        find.text('Thanks for your feedback. Tell us how we can improve CookMate.'),
+        find.text('Thanks for your feedback. Tell us how we can improve Food CHART.'),
         findsOneWidget,
       );
       expect(find.byKey(const Key('send_feedback_button')), findsOneWidget);
@@ -164,14 +164,14 @@ void main() {
       await tester.tap(find.text('Open Rating Popup'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Enjoying CookMate? 🍳❤️'), findsOneWidget);
+      expect(find.text('Enjoying Food CHART? 🍳❤️'), findsOneWidget);
 
       // Tap Maybe Later
       await tester.tap(find.byKey(const Key('maybe_later_button')));
       await tester.pumpAndSettle();
 
       // Popup is dismissed
-      expect(find.text('Enjoying CookMate? 🍳❤️'), findsNothing);
+      expect(find.text('Enjoying Food CHART? 🍳❤️'), findsNothing);
       expect(fakeService.dismissedCalled, isTrue);
     });
 

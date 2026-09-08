@@ -399,7 +399,7 @@ class _SubmitRecipeScreenState extends ConsumerState<SubmitRecipeScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Your recipe "${_nameController.text.trim()}" has been sent to the CookMate team for review.',
+                'Your recipe "${_nameController.text.trim()}" has been sent to the Food CHART team for review.',
                 style: TextStyle(fontSize: 13.5, color: isDark ? Colors.white70 : AppColors.lightTextSecondary),
                 textAlign: TextAlign.center,
               ),
@@ -526,7 +526,7 @@ class _SubmitRecipeScreenState extends ConsumerState<SubmitRecipeScreen> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Every community recipe is reviewed by the CookMate team before publication to maintain culinary quality.',
+                      'Every community recipe is reviewed by the Food CHART team before publication to maintain culinary quality.',
                       style: TextStyle(fontSize: 12.5, height: 1.4),
                     ),
                   ),
@@ -884,7 +884,7 @@ class _SubmitRecipeScreenState extends ConsumerState<SubmitRecipeScreen> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'If approved, your recipe may appear publicly in CookMate and become part of the main CookMate recipe collection. Your name may be shown as the contributor if you choose.',
+                    'If approved, your recipe may appear publicly in Food CHART and become part of the main Food CHART recipe collection. Your name may be shown as the contributor if you choose.',
                     style: TextStyle(fontSize: 12.5, height: 1.4, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -897,7 +897,7 @@ class _SubmitRecipeScreenState extends ConsumerState<SubmitRecipeScreen> {
                     onChanged: (val) => setState(() => _allowPublication = val ?? false),
                     activeColor: AppColors.veg,
                     title: const Text(
-                      'I give CookMate permission to publish this recipe in the public CookMate recipe collection if it is approved by the administrator.',
+                      'I give Food CHART permission to publish this recipe in the public Food CHART recipe collection if it is approved by the administrator.',
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
                     ),
                     contentPadding: EdgeInsets.zero,

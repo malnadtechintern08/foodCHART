@@ -1,6 +1,6 @@
 /* ==========================================================================
-   CookMate Web Admin - Brand Stylesheet
-   Matches CookMate Flutter App Theme (#0E0E0E, #1A1A1A, #FF6B35, #FF8C42)
+   Food CHART Web Admin - Brand Stylesheet
+   Matches Food CHART Flutter App Theme (#0E0E0E, #1A1A1A, #FF6B35, #FF8C42)
    ========================================================================== */
 
 :root {
@@ -111,7 +111,7 @@ a:hover {
   object-fit: contain;
 }
 
-.brand-cookmate {
+.brand-foodchart, .brand-cookmate {
   font-family: 'Outfit', sans-serif;
   font-weight: 800 !important;
   letter-spacing: -0.5px;
@@ -119,12 +119,12 @@ a:hover {
   align-items: baseline;
 }
 
-.cook-part, .brand-cook {
+.food-part, .brand-food, .cook-part, .brand-cook {
   color: #FFFFFF !important;
   font-weight: 800 !important;
 }
 
-.mate-part, .brand-mate {
+.chart-part, .brand-chart, .mate-part, .brand-mate {
   color: #E50915 !important;
   font-weight: 800 !important;
 }
@@ -894,7 +894,7 @@ input:checked + .slider:before {
 }
 
 /* ==========================================================================
-   CookMate Native Modals
+   Food CHART Native Modals
    ========================================================================== */
 .cm-modal-overlay {
   position: fixed;

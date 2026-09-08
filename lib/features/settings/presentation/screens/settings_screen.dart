@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../core/localization/app_language.dart';
 import '../../../../core/localization/language_provider.dart';
+import '../../../../core/services/app_share_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/language_selector_modal.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -399,10 +400,26 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     child: const Icon(Icons.star_rounded, color: Color(0xFFFFB300), size: 20),
                   ),
-                  title: const Text('⭐ Rate CookMate', style: TextStyle(fontWeight: FontWeight.w700)),
+                  title: const Text('⭐ Rate Food CHART', style: TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: const Text('Share your love & review on Google Play'),
                   trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () => showCookMateRatingPopup(context, isManual: true),
+                ),
+                Divider(height: 1, color: isDark ? AppColors.border : AppColors.lightBorder),
+                ListTile(
+                  key: const Key('share_cookmate_settings_tile'),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.whatsappGreen.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.share_rounded, color: AppColors.whatsappGreen, size: 20),
+                  ),
+                  title: Text(l10n.shareApp, style: const TextStyle(fontWeight: FontWeight.w700)),
+                  subtitle: Text(l10n.shareAppSubtitle),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  onTap: () => AppShareService.showShareAppModal(context),
                 ),
               ],
             ),
@@ -455,8 +472,8 @@ class SettingsScreen extends ConsumerWidget {
                               color: isDark ? Colors.white : AppColors.lightTextPrimary,
                             ),
                             children: [
-                              TextSpan(text: 'Cook', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
-                              const TextSpan(text: 'Mate', style: TextStyle(color: AppColors.nonVegRed)),
+                              TextSpan(text: 'Food ', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+                              const TextSpan(text: 'CHART', style: TextStyle(color: AppColors.primary)),
                             ],
                           ),
                         ),

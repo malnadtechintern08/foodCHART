@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Popular / Trending Hashtags
+ * Food CHART REST API - Popular / Trending Hashtags
  * 
  * GET /api/tags/popular.php?limit=15
  */

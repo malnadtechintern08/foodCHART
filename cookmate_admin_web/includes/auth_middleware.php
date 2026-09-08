@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate - Mobile User Authentication Middleware
+ * Food CHART - Mobile User Authentication Middleware
  * Validates Bearer tokens and resolves authenticated user identity from MySQL.
  */
 
@@ -11,7 +11,7 @@ function set_cors_headers(): void {
         header('Content-Type: application/json; charset=utf-8');
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Cookmate-Token');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Foodchart-Token, X-Cookmate-Token');
     }
 }
 
@@ -34,6 +34,8 @@ function get_auth_token_from_headers(): ?string {
         $authHeader = trim($_SERVER['HTTP_AUTHORIZATION']);
     } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
         $authHeader = trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+    } elseif (isset($_SERVER['HTTP_X_FOODCHART_TOKEN'])) {
+        $authHeader = 'Bearer ' . trim($_SERVER['HTTP_X_FOODCHART_TOKEN']);
     } elseif (isset($_SERVER['HTTP_X_COOKMATE_TOKEN'])) {
         $authHeader = 'Bearer ' . trim($_SERVER['HTTP_X_COOKMATE_TOKEN']);
     } elseif (function_exists('apache_request_headers')) {
@@ -42,6 +44,8 @@ function get_auth_token_from_headers(): ?string {
             $authHeader = trim($headers['Authorization']);
         } elseif (isset($headers['authorization'])) {
             $authHeader = trim($headers['authorization']);
+        } elseif (isset($headers['X-Foodchart-Token'])) {
+            $authHeader = 'Bearer ' . trim($headers['X-Foodchart-Token']);
         } elseif (isset($headers['X-Cookmate-Token'])) {
             $authHeader = 'Bearer ' . trim($headers['X-Cookmate-Token']);
         }
@@ -52,6 +56,9 @@ function get_auth_token_from_headers(): ?string {
     }
 
     // Direct token header without Bearer prefix
+    if (isset($_SERVER['HTTP_X_FOODCHART_TOKEN']) && !empty(trim($_SERVER['HTTP_X_FOODCHART_TOKEN']))) {
+        return trim($_SERVER['HTTP_X_FOODCHART_TOKEN']);
+    }
     if (isset($_SERVER['HTTP_X_COOKMATE_TOKEN']) && !empty(trim($_SERVER['HTTP_X_COOKMATE_TOKEN']))) {
         return trim($_SERVER['HTTP_X_COOKMATE_TOKEN']);
     }
@@ -137,8 +144,8 @@ function get_or_register_user(PDO $pdo, ?string $token, ?string $displayName = n
 
     // Generate fresh secure token if no valid token provided
     $newToken = $cleanToken ?: bin2hex(random_bytes(24));
-    $name = !empty($displayName) ? trim($displayName) : 'CookMate Chef';
-    $device = !empty($deviceInfo) ? trim($deviceInfo) : 'CookMate Mobile App';
+    $name = !empty($displayName) ? trim($displayName) : 'Food CHART Chef';
+    $device = !empty($deviceInfo) ? trim($deviceInfo) : 'Food CHART Mobile App';
 
     try {
         $stmt = $pdo->prepare("INSERT INTO users (auth_token, display_name, device_info) VALUES (?, ?, ?)");

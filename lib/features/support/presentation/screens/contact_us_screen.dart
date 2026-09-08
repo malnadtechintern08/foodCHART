@@ -90,7 +90,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Thank you for reaching out to CookMate! Our culinary and technical support team will review your message and reply back shortly.',
+              'Thank you for reaching out to Food CHART! Our culinary and technical support team will review your message and reply back shortly.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -171,7 +171,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                       const SizedBox(width: 12),
                       const Expanded(
                         child: Text(
-                          'CookMate Support Desk',
+                          'Food CHART Support Desk',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                         ),
                       ),

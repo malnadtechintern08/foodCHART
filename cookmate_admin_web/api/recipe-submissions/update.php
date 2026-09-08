@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Update / Resubmit Recipe Submission
+ * Food CHART API - Update / Resubmit Recipe Submission
  * POST /api/recipe-submissions/update.php
  * Allows editing while status is 'pending' or 'changes_requested'.
  */

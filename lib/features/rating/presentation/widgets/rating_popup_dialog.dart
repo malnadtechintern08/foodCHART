@@ -56,14 +56,16 @@ Future<void> showCookMateRatingPopup(
             onSendFeedbackWithStars: onSendFeedbackWithStars ??
                 (onSendFeedback == null
                     ? (stars) {
-                        if (context.mounted) {
-                          try {
-                            context.pushNamed(
-                              RouteNames.rateUs,
-                              extra: {'stars': stars},
-                            );
-                          } catch (_) {}
-                        }
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (context.mounted) {
+                            try {
+                              context.pushNamed(
+                                RouteNames.rateUs,
+                                extra: {'stars': stars},
+                              );
+                            } catch (_) {}
+                          }
+                        });
                       }
                     : null),
           ),
@@ -104,10 +106,10 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
   }
 
   Future<void> _handlePlayStoreRate() async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
     setState(() => _isProcessing = true);
     await _service.recordRatingSubmitted(_selectedStars);
 
-    final messenger = ScaffoldMessenger.maybeOf(context);
     if (mounted) {
       Navigator.of(context, rootNavigator: true).pop();
     }
@@ -140,18 +142,20 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
       Navigator.of(context, rootNavigator: true).pop();
     }
 
-    if (starsCallback != null) {
-      starsCallback(stars);
-    } else if (feedbackCallback != null) {
-      feedbackCallback();
-    } else if (context.mounted) {
-      try {
-        context.pushNamed(
-          RouteNames.rateUs,
-          extra: {'stars': stars},
-        );
-      } catch (_) {}
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (starsCallback != null) {
+        starsCallback(stars);
+      } else if (feedbackCallback != null) {
+        feedbackCallback();
+      } else if (mounted) {
+        try {
+          context.pushNamed(
+            RouteNames.rateUs,
+            extra: {'stars': stars},
+          );
+        } catch (_) {}
+      }
+    });
   }
 
   Future<void> _handleMaybeLater() async {
@@ -235,7 +239,7 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
 
             // Title
             Text(
-              'Enjoying CookMate? 🍳❤️',
+              'Enjoying Food CHART? 🍳❤️',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 19,
@@ -248,7 +252,7 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
 
             // Subtitle
             Text(
-              "We hope you're enjoying CookMate. Your feedback helps us make the app better!",
+              "We hope you're enjoying Food CHART. Your feedback helps us make the app better!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.5,
@@ -371,7 +375,7 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
                 SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    "We're glad you're enjoying CookMate! ❤️",
+                    "We're glad you're enjoying Food CHART! ❤️",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12.5,
@@ -409,7 +413,7 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
                     )
                   : const Icon(Icons.star_rounded, size: 20),
               label: const Text(
-                '⭐ Rate CookMate on Play Store',
+                '⭐ Rate Food CHART on Play Store',
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w800,
@@ -432,7 +436,7 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
               border: Border.all(color: Colors.orange.withValues(alpha: 0.25)),
             ),
             child: const Text(
-              'Thanks for your feedback. Tell us how we can improve CookMate.',
+              'Thanks for your feedback. Tell us how we can improve Food CHART.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.5,

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Withdraw Recipe Submission
+ * Food CHART API - Withdraw Recipe Submission
  * POST /api/recipe-submissions/withdraw.php
  */
 

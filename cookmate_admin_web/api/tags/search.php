@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Hashtag Autocomplete Suggestions
+ * Food CHART REST API - Hashtag Autocomplete Suggestions
  * 
  * GET /api/tags/search.php?q=ri&limit=10
  */

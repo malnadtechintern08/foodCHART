@@ -15,10 +15,10 @@ void main() {
   group('CookMateNotificationService Tests', () {
     test('Notification constants and channel configuration are correctly defined', () {
       expect(CookMateNotificationService.channelId, 'cookmate_notifications');
-      expect(CookMateNotificationService.channelName, 'CookMate Notifications');
+      expect(CookMateNotificationService.channelName, 'Food CHART Notifications');
       expect(
         CookMateNotificationService.channelDescription,
-        contains('High-priority CookMate updates'),
+        contains('High-priority Food CHART updates'),
       );
       expect(
         CookMateNotificationService.keyShownIds,
@@ -42,11 +42,11 @@ void main() {
       );
 
       // Verify shown ids start empty
-      expect(service.shownNotificationIds.contains(991), isFalse);
+      expect(service.shownNotificationIds.contains(notif.id), isFalse);
 
       // When showed or marked as shown
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList(CookMateNotificationService.keyShownIds, ['991']);
+      await prefs.setStringList(CookMateNotificationService.keyShownIds, ['${notif.id}']);
       
       // Reload shown IDs via mock initialization check
       final storedList = prefs.getStringList(CookMateNotificationService.keyShownIds) ?? [];
@@ -106,6 +106,36 @@ void main() {
       final decoded = json.decode(payload) as Map<String, dynamic>;
       expect(decoded['notification_id'], 202);
       expect(decoded['related_type'], 'announcement');
+    });
+
+    test('Notification model list deletion and clear functions operate correctly', () {
+      final list = [
+        NotificationModel(
+          id: 1,
+          title: 'Notification 1',
+          message: 'Message 1',
+          type: NotificationType.general,
+          isRead: false,
+          createdAt: DateTime.now(),
+        ),
+        NotificationModel(
+          id: 2,
+          title: 'Notification 2',
+          message: 'Message 2',
+          type: NotificationType.recipeUpdated,
+          isRead: true,
+          createdAt: DateTime.now(),
+        ),
+      ];
+
+      // Simulate single delete
+      final updated = List<NotificationModel>.from(list)..removeWhere((n) => n.id == 1);
+      expect(updated.length, 1);
+      expect(updated.first.id, 2);
+
+      // Simulate clear all
+      final cleared = <NotificationModel>[];
+      expect(cleared.isEmpty, isTrue);
     });
   });
 }

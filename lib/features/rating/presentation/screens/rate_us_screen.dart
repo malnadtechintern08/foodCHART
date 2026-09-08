@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -101,7 +100,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
     setState(() => _isSubmitting = true);
 
     final feedback = _feedbackController.text.trim();
-    final name = _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'CookMate User';
+    final name = _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Food CHART User';
     final email = _emailController.text.trim();
 
     String deviceInfo = 'Unknown Device';
@@ -169,7 +168,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Your honest thoughts help the CookMate culinary and engineering team make the app significantly better with every update.',
+              'Your honest thoughts help the Food CHART culinary and engineering team make the app significantly better with every update.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -217,7 +216,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: const Text(
-          'Rate CookMate',
+          'Rate Food CHART',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
         ),
         backgroundColor: isDark ? AppColors.darkBackground : Colors.white,
@@ -271,7 +270,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
                       ),
                       const SizedBox(height: 12),
                       const Text(
-                        'Help Us Improve CookMate',
+                        'Help Us Improve Food CHART',
                         style: TextStyle(fontSize: 19, fontWeight: FontWeight.w900),
                         textAlign: TextAlign.center,
                       ),

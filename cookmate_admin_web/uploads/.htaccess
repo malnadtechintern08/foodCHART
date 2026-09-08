@@ -1,4 +1,4 @@
-# CookMate - Secure Uploads Directory
+# Food CHART - Secure Uploads Directory
 # Disallow execution of scripts in uploaded directory
 
 <FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|php8|phar|inc|pl|py|cgi|sh|bash)$">

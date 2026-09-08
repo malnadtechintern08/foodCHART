@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Support & Policy Pages Manager
+ * Food CHART Web Admin - Support & Policy Pages Manager
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();
@@ -80,7 +80,7 @@ require_once __DIR__ . '/includes/header.php';
         <div>
             <h2 class="card-title" style="margin: 0;">Policy, Legal & Support Pages</h2>
             <p style="margin: 4px 0 0; font-size: 13px; color: var(--cm-text-muted);">
-                Content managed here syncs live to the CookMate mobile application over the REST API.
+                Content managed here syncs live to the Food CHART mobile application over the REST API.
             </p>
         </div>
         <a href="<?= BASE_URL ?>/support_page_edit.php" class="btn btn-primary btn-sm">

@@ -53,8 +53,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Rate CookMate'), findsOneWidget);
-      expect(find.text('Help Us Improve CookMate'), findsOneWidget);
+      expect(find.text('Rate Food CHART'), findsOneWidget);
+      expect(find.text('Help Us Improve Food CHART'), findsOneWidget);
       expect(find.text('2 Stars • Could be better'), findsOneWidget);
 
       // Verify category chips
@@ -196,7 +196,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should be on Rate Us screen, NOT Contact Us screen!
-      expect(find.text('Rate CookMate'), findsOneWidget);
+      expect(find.text('Rate Food CHART'), findsOneWidget);
       expect(find.text('2 Stars • Could be better'), findsOneWidget);
       expect(find.text('Contact Us Screen'), findsNothing);
     });

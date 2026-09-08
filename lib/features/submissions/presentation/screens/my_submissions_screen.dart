@@ -63,7 +63,7 @@ class MySubmissionsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Share your authentic recipes with the CookMate community! Submissions are reviewed by our team before publication.',
+                      'Share your authentic recipes with the Food CHART community! Submissions are reviewed by our team before publication.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.4),
                     ),
@@ -356,12 +356,12 @@ class MySubmissionsScreen extends ConsumerWidget {
                       ),
                     ),
 
-                  // If Published, show View in CookMate
+                  // If Published, show View in Food CHART
                   if (sub.isPublished && sub.publishedRecipeId != null)
                     ElevatedButton.icon(
                       onPressed: () => context.push('/recipe/${sub.publishedRecipeId}'),
                       icon: const Icon(Icons.visibility_rounded, size: 16),
-                      label: const Text('View in CookMate', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      label: const Text('View in Food CHART', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.veg,
                         foregroundColor: Colors.white,

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - App Ratings & Feedback (Rate Us) Manager
+ * Food CHART Web Admin - App Ratings & Feedback (Rate Us) Manager
  * 
  * Displays and manages reviews submitted from the mobile app's Rate Us screen
  * (specifically focused on 1, 2, and 3 star feedback).
@@ -110,7 +110,7 @@ require_once __DIR__ . '/includes/header.php';
             Rate Us Reviews (1–3 Stars)
         </h1>
         <p class="page-description" style="color: var(--cm-text-muted); margin: 4px 0 0 0; font-size: 14px;">
-            Feedback submitted from users who rated CookMate 1, 2, or 3 stars. Use these insights to address pain points and enhance the user experience.
+            Feedback submitted from users who rated Food CHART 1, 2, or 3 stars. Use these insights to address pain points and enhance the user experience.
         </p>
     </div>
 </div>
@@ -306,7 +306,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
                             <span>
                                 <i class="fa-solid fa-user" style="margin-right: 5px; opacity: 0.7;"></i>
-                                <strong style="color: var(--cm-text-primary);"><?= htmlspecialchars($r['user_name'] ?? 'CookMate User') ?></strong>
+                                <strong style="color: var(--cm-text-primary);"><?= htmlspecialchars($r['user_name'] ?? 'Food CHART User') ?></strong>
                             </span>
                             <?php if (!empty($r['user_email'])): ?>
                                 <span>

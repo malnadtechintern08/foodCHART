@@ -1,16 +1,30 @@
 <?php
 /**
- * CookMate Web Admin - Duplicate Recipe Handler
+ * Food CHART Web Admin - Duplicate Recipe Handler
  */
 require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/includes/admin_auth.php';
+require_admin_login();
+
 $pdo = get_db_connection();
 
 $id = trim($_POST['id'] ?? $_GET['id'] ?? '');
+$returnUrl = trim($_POST['return_url'] ?? $_GET['return_url'] ?? '');
+if (empty($returnUrl) && !empty($_SERVER['HTTP_REFERER'])) {
+    $refHost = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+    if (!$refHost || $refHost === ($_SERVER['HTTP_HOST'] ?? '')) {
+        $returnUrl = $_SERVER['HTTP_REFERER'];
+    }
+}
+$fallbackUrl = !empty($returnUrl) ? $returnUrl : (BASE_URL . '/recipes.php');
+
 if (empty($id)) {
     set_flash_message('warning', 'No recipe specified for duplication.');
-    header('Location: ' . BASE_URL . '/recipes.php');
+    header('Location: ' . $fallbackUrl);
     exit;
 }
+
+$redirectTarget = !empty($returnUrl) ? '&return_url=' . urlencode($returnUrl) : '';
 
 try {
     $stmt = $pdo->prepare("SELECT * FROM recipes WHERE id = ?");
@@ -19,9 +33,10 @@ try {
 
     if (!$rec) {
         set_flash_message('danger', 'Original recipe not found in database.');
-        header('Location: ' . BASE_URL . '/recipes.php');
+        header('Location: ' . $fallbackUrl);
         exit;
     }
+
 
     $pdo->beginTransaction();
 
@@ -71,13 +86,14 @@ try {
 
     $pdo->commit();
     set_flash_message('success', "Recipe duplicated as \"$newTitle\". You can now customize it!");
-    header('Location: ' . BASE_URL . '/recipe-form.php?id=' . urlencode($newId));
+    header('Location: ' . BASE_URL . '/recipe-form.php?id=' . urlencode($newId) . $redirectTarget);
     exit;
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
     set_flash_message('danger', 'Error duplicating recipe: ' . $e->getMessage());
-    header('Location: ' . BASE_URL . '/recipes.php');
+    header('Location: ' . $fallbackUrl);
     exit;
 }
+

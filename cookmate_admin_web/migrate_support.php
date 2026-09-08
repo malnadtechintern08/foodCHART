@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Migration Runner for 004 Support & Pages
+ * Food CHART Web Admin - Migration Runner for 004 Support & Pages
  */
 require_once __DIR__ . '/config/db.php';
 

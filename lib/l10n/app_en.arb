@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "CookMate",
+  "appName": "Food CHART",
   "appTagline": "Your Offline Master Culinary Companion",
   "navHome": "Home",
   "navExplore": "Explore",
@@ -230,7 +230,7 @@
   "resetConfirmTitle": "Reset Catalog?",
   "resetConfirmDesc": "This will restore all default recipes to original values.",
   "about": "ABOUT",
-  "aboutCookMate": "About CookMate",
+  "aboutCookMate": "About Food CHART",
   "versionText": "Version 2.0.0 • Indian Culinary Edition",
   "selectLanguageTitle": "Select Language",
   "english": "English",
@@ -303,5 +303,15 @@
   "catIngredientNote": "Ingredient Note",
   "catMalnadRecipe": "Malnad Recipe",
   "catPersonalNote": "Personal Note",
-  "catOther": "Other"
+  "catOther": "Other",
+  "shareRecipe": "Share Recipe",
+  "shareToWhatsApp": "Share on WhatsApp",
+  "shareMoreOptions": "More Sharing Options",
+  "copyRecipeText": "Copy Recipe Text",
+  "recipeCopiedToClipboard": "Recipe copied to clipboard! 📋",
+  "shareRecipeSubtitle": "Share this delicious dish with family & friends on WhatsApp",
+  "shareApp": "Share Food CHART App",
+  "shareAppSubtitle": "Share via WhatsApp, Quick Share, Bluetooth & more",
+  "shareAppQuickShareBluetooth": "Quick Share, Bluetooth & More",
+  "shareAppLinkCopied": "Food CHART app link copied to clipboard! 📋"
 }

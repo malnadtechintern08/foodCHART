@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - FAQs Endpoint
+ * Food CHART REST API - FAQs Endpoint
  * 
  * GET /api/support/faqs.php
  * GET /api/support/faqs.php?category=General

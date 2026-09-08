@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Unread Notification Count
+ * Food CHART API - Unread Notification Count
  * GET /api/notifications/unread-count.php
  */
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $pdo = get_db_connection();
 ensure_notifications_tables_exist($pdo);
-$user = get_authenticated_user($pdo, false, true, 'CookMate Foodie');
+$user = get_authenticated_user($pdo, false, true, 'Food CHART Foodie');
 $userId = $user ? (int)$user['id'] : 1;
 
 try {

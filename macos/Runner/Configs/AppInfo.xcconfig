@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = cookmate
+PRODUCT_NAME = Food CHART
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.cookmate.cookmate
+PRODUCT_BUNDLE_IDENTIFIER = com.food.chart
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.cookmate. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.food.chart. All rights reserved.

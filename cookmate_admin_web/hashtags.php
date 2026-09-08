@@ -1,7 +1,7 @@
 <?php
 /**
- * CookMate Web Admin - Hashtag Management Page
- * Native CookMate Design System (No external Bootstrap dependencies)
+ * Food CHART Web Admin - Hashtag Management Page
+ * Native Food CHART Design System (No external Bootstrap dependencies)
  */
 
 require_once __DIR__ . '/config/db.php';
@@ -304,7 +304,7 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <!-- ==========================================================================
-     Native CookMate Modals (Zero Bootstrap dependency)
+     Native Food CHART Modals (Zero Bootstrap dependency)
      ========================================================================== -->
 
 <!-- Add Tag Modal -->

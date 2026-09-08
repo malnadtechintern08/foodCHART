@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - REST API endpoint for Categories
+ * Food CHART Web Admin - REST API endpoint for Categories
  */
 require_once __DIR__ . '/../config/db.php';
 

@@ -6,8 +6,12 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_empty_state.dart';
 import '../../../../core/widgets/app_error_state.dart';
 import '../../../../core/widgets/app_loading_indicator.dart';
+import '../../../recipes/domain/entities/recipe.dart';
+import '../../../recipes/presentation/providers/recipe_providers.dart';
+
 import '../providers/category_providers.dart';
 import '../widgets/category_card_widget.dart';
+
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
@@ -32,77 +36,89 @@ class CategoriesScreen extends ConsumerWidget {
 
           final totalRecipes = categories.fold<int>(0, (sum, cat) => sum + cat.recipeCount);
 
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.25),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.restaurant_menu_rounded,
-                          color: AppColors.primaryOrange,
-                          size: 20,
+          return RefreshIndicator(
+            color: AppColors.primaryOrange,
+            onRefresh: () async {
+              await ref.read(syncRecipesWithServerProvider.future).catchError((_) => <Recipe>[]);
+              ref.invalidate(categoriesProvider);
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.25),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            '$totalRecipes Recipes across ${categories.length} Categories',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                              color: AppColors.primaryOrange,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.restaurant_menu_rounded,
+                            color: AppColors.primaryOrange,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              '$totalRecipes Recipes across ${categories.length} Categories',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13,
+                                color: AppColors.primaryOrange,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 14,
-                    childAspectRatio: MediaQuery.sizeOf(context).width < 360 ? 0.94 : 1.05,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final category = categories[index];
-                      return CategoryCardWidget(
-                        category: category,
-                        onTap: () {
-                          context.pushNamed(
-                            RouteNames.categoryRecipes,
-                            pathParameters: {'id': category.id},
-                          );
-                        },
-                      );
-                    },
-                    childCount: categories.length,
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 14,
+                      childAspectRatio: MediaQuery.sizeOf(context).width < 360 ? 0.94 : 1.05,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final category = categories[index];
+                        return CategoryCardWidget(
+                          category: category,
+                          onTap: () {
+                            context.pushNamed(
+                              RouteNames.categoryRecipes,
+                              pathParameters: {'id': category.id},
+                            );
+                          },
+                        );
+                      },
+                      childCount: categories.length,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
         loading: () => const AppLoadingIndicator(message: 'Loading categories...'),
         error: (err, _) => AppErrorState(
           message: err.toString(),
-          onRetry: () => ref.refresh(categoriesProvider),
+          onRetry: () {
+            ref.read(syncRecipesWithServerProvider.future).catchError((_) => <Recipe>[]);
+            ref.refresh(categoriesProvider);
+          },
         ),
+
       ),
     );
   }

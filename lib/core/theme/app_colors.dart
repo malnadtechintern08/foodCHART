@@ -39,6 +39,7 @@ class AppColors {
   static const Color accentGold = Color(0xFFFFB300);
   static const Color accentBlue = Color(0xFF29B6F6);
   static const Color accentPurple = Color(0xFFAB47BC);
+  static const Color whatsappGreen = Color(0xFF25D366);
 
   // Light Theme Fallbacks (For consistency)
   static const Color lightBackground = Color(0xFFF9F6F0);

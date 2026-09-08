@@ -107,7 +107,7 @@ class PrivacyPolicyScreen extends ConsumerWidget {
                       Text(
                         page.summary.isNotEmpty
                             ? page.summary
-                            : 'Understand how CookMate protects, respects, and secures your culinary and device data.',
+                            : 'Understand how Food CHART protects, respects, and secures your culinary and device data.',
                         style: TextStyle(
                           fontSize: 13.5,
                           color: isDark ? Colors.white70 : AppColors.lightTextSecondary,

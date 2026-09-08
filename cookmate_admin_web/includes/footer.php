@@ -3,8 +3,8 @@
                     <?= cookmate_brand_html() ?> &bull; Culinary Admin Suite
                 </div>
                 <div>
-                    Connected to MySQL: <code style="color: var(--cm-primary);"><?= htmlspecialchars($GLOBALS['cm_connected_db'] ?? DB_NAME) ?></code>
-                    <span style="font-size: 11px; opacity: 0.8;">(<?= htmlspecialchars($GLOBALS['cm_connected_host'] ?? DB_HOST) ?>)</span>
+                    Connected to MySQL: <code style="color: var(--cm-primary);">Food CHART DB</code>
+                    <span style="font-size: 11px; opacity: 0.8;">(Active Database)</span>
                 </div>
             </footer>
         </main>

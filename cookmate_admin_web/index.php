@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Dashboard
+ * Food CHART Web Admin - Dashboard
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();
@@ -69,7 +69,7 @@ require_once __DIR__ . '/includes/header.php';
                 <strong style="color: #FFF; font-size: 15px; display: block;">
                     🔔 <?= $pendingSubmissions ?> New Recipe Submission<?= $pendingSubmissions > 1 ? 's' : '' ?> Awaiting Moderation
                 </strong>
-                <span style="color: #CCC; font-size: 13px;">App users have submitted recipes for review and publication into CookMate.</span>
+                <span style="color: #CCC; font-size: 13px;">App users have submitted recipes for review and publication into Food CHART.</span>
             </div>
         </div>
         <a href="<?= BASE_URL ?>/recipe-submissions.php?status=pending" class="btn btn-primary btn-sm" style="padding: 8px 18px;">

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate - Notification Functions & Reusable Service Layer
+ * Food CHART - Notification Functions & Reusable Service Layer
  * Implements relational notification management, the strict 24-hour read retention query rule,
  * idempotent read timestamp handling, and automatic event dispatching.
  */
@@ -101,7 +101,7 @@ function ensure_notifications_tables_exist(PDO $pdo): void {
         if ($userCount === 0) {
             $pdo->exec("
                 INSERT INTO users (id, display_name, email, auth_token) VALUES 
-                (1, 'Admin Chef', 'admin@cookmate.app', 'tok_admin_001'),
+                (1, 'Admin Chef', 'admin@foodchart.app', 'tok_admin_001'),
                 (6, 'Abhishek', 'abhishek@example.com', 'tok_abhishek_6a9a773109227'),
                 (7, 'Priya', 'priya@example.com', 'tok_priya_6a9a773109890')
             ");
@@ -112,9 +112,9 @@ function ensure_notifications_tables_exist(PDO $pdo): void {
         if ($notifCount === 0) {
             $pdo->exec("
                 INSERT INTO notifications (title, message, type, target_type, related_type, related_id, action_label, status, created_at) VALUES 
-                ('New Recipe Added 🍲', 'Chicken Ghee Roast is now available on CookMate. Explore this authentic coastal delicacy!', 'new_recipe', 'all', 'recipe', 'rec_chicken_ghee_roast', 'View Recipe', 'active', NOW()),
+                ('New Recipe Added 🍲', 'Chicken Ghee Roast is now available on Food CHART. Explore this authentic coastal delicacy!', 'new_recipe', 'all', 'recipe', 'rec_chicken_ghee_roast', 'View Recipe', 'active', NOW()),
                 ('✨ Recipe Updated', 'Masala Dosa recipe has brand new step-by-step cooking instructions and crispiness tips.', 'recipe_updated', 'all', 'recipe', 'rec_masala_dosa', 'Check Recipe', 'active', NOW()),
-                ('📢 CookMate Community Update', 'Welcome to the CookMate notification center! Stay updated with community recipes and chef tips.', 'admin_announcement', 'all', NULL, NULL, 'Tap to Explore', 'active', NOW()),
+                ('📢 Food CHART Community Update', 'Welcome to the Food CHART notification center! Stay updated with community recipes and chef tips.', 'admin_announcement', 'all', NULL, NULL, 'Tap to Explore', 'active', NOW()),
                 ('🚀 New Feature: Trending Hashtags', 'Discover authentic regional specialties by tapping trending hashtags like #MalnadSpecial.', 'new_feature', 'all', 'feature', 'hashtags', 'Try Hashtags', 'active', NOW())
             ");
         }
@@ -176,10 +176,39 @@ function create_system_notification(PDO $pdo, array $data): int {
 }
 
 /**
- * Returns notifications for an authenticated user following the exact 24-hour read rule:
- * - Unread (is_read = 0 or no entry) -> ALWAYS show
- * - Read (is_read = 1 and read_at within 24h) -> SHOW
- * - Read > 24 hours ago -> AUTOMATICALLY HIDE
+ * Automatically purges notifications that have exceeded the strict 24-hour expiration rule:
+ * - Purges notifications created > 24 hours ago
+ * - Purges related user_notifications records
+ * - Ensures mobile and admin only display fresh within-24-hour notifications
+ */
+function auto_purge_expired_notifications(PDO $pdo): int {
+    try {
+        $stmt1 = $pdo->prepare("
+            DELETE FROM user_notifications 
+            WHERE notification_id IN (
+                SELECT id FROM notifications 
+                WHERE created_at < NOW() - INTERVAL 24 HOUR
+                   OR (expires_at IS NOT NULL AND expires_at < NOW())
+            )
+        ");
+        $stmt1->execute();
+
+        $stmt2 = $pdo->prepare("
+            DELETE FROM notifications 
+            WHERE created_at < NOW() - INTERVAL 24 HOUR
+               OR (expires_at IS NOT NULL AND expires_at < NOW())
+        ");
+        $stmt2->execute();
+        return (int)$stmt2->rowCount();
+    } catch (Exception $e) {
+        return 0;
+    }
+}
+
+/**
+ * Returns notifications for an authenticated user following the exact 24-hour rule:
+ * - Only notifications created within the last 24 hours are returned (strict 24-hour retention).
+ * - Read notifications > 24 hours or older notifications are automatically purged/hidden.
  *
  * @param PDO $pdo
  * @param int $userId
@@ -190,6 +219,8 @@ function create_system_notification(PDO $pdo, array $data): int {
  */
 function get_user_notifications(PDO $pdo, int $userId, int $page = 1, int $limit = 20, ?string $filter = null): array {
     ensure_notifications_tables_exist($pdo);
+    auto_purge_expired_notifications($pdo);
+
     $page = max(1, $page);
     $limit = max(1, min(100, $limit));
     $offset = ($page - 1) * $limit;
@@ -219,6 +250,7 @@ function get_user_notifications(PDO $pdo, int $userId, int $page = 1, int $limit
         LEFT JOIN user_notifications un 
                ON un.notification_id = n.id AND un.user_id = ?
         WHERE n.status = 'active'
+          AND n.created_at >= NOW() - INTERVAL 24 HOUR
           AND (
                n.target_type = 'all' 
                OR (n.target_type = 'specific_user' AND n.target_user_id = ?)
@@ -246,6 +278,10 @@ function get_user_notifications(PDO $pdo, int $userId, int $page = 1, int $limit
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return array_map(function($r) {
+        $rawCreated = $r['created_at'];
+        $isoUtc = gmdate('Y-m-d\TH:i:s\Z', strtotime($rawCreated));
+        $readAtUtc = !empty($r['read_at']) ? gmdate('Y-m-d\TH:i:s\Z', strtotime($r['read_at'])) : null;
+
         return [
             'id'           => (int)$r['id'],
             'title'        => $r['title'],
@@ -257,14 +293,14 @@ function get_user_notifications(PDO $pdo, int $userId, int $page = 1, int $limit
             'image'        => $r['image'],
             'action_label' => $r['action_label'] ?? null,
             'is_read'      => (bool)$r['is_read'],
-            'read_at'      => $r['read_at'],
-            'created_at'   => $r['created_at'],
+            'read_at'      => $readAtUtc,
+            'created_at'   => $isoUtc,
         ];
     }, $rows);
 }
 
 /**
- * Returns the exact count of unread notifications for a given user.
+ * Returns the exact count of unread notifications for a given user within 24 hours.
  *
  * @param PDO $pdo
  * @param int $userId
@@ -272,12 +308,15 @@ function get_user_notifications(PDO $pdo, int $userId, int $page = 1, int $limit
  */
 function get_user_unread_count(PDO $pdo, int $userId): int {
     ensure_notifications_tables_exist($pdo);
+    auto_purge_expired_notifications($pdo);
+
     $stmt = $pdo->prepare("
         SELECT COUNT(*)
         FROM notifications n
         LEFT JOIN user_notifications un 
                ON un.notification_id = n.id AND un.user_id = ?
         WHERE n.status = 'active'
+          AND n.created_at >= NOW() - INTERVAL 24 HOUR
           AND (
                n.target_type = 'all' 
                OR (n.target_type = 'specific_user' AND n.target_user_id = ?)
@@ -290,6 +329,7 @@ function get_user_unread_count(PDO $pdo, int $userId): int {
     $stmt->execute([$userId, $userId, $userId]);
     return (int)$stmt->fetchColumn();
 }
+
 
 /**
  * Marks a single notification as read.
@@ -421,6 +461,106 @@ function mark_notification_as_unread(PDO $pdo, int $notificationId, int $userId)
     ");
 
     return $stmt->execute([$notificationId, $userId]);
+}
+
+/**
+ * Dismisses / deletes a notification for a user so it no longer appears in their list.
+ *
+ * @param PDO $pdo
+ * @param int $notificationId
+ * @param int $userId
+ * @return bool
+ */
+function dismiss_user_notification(PDO $pdo, int $notificationId, int $userId): bool {
+    $stmt = $pdo->prepare("
+        INSERT INTO user_notifications (
+            notification_id,
+            user_id,
+            is_read,
+            read_at,
+            is_dismissed,
+            created_at,
+            updated_at
+        ) VALUES (
+            ?,
+            ?,
+            1,
+            NOW(),
+            1,
+            NOW(),
+            NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+            is_dismissed = 1,
+            is_read = 1,
+            read_at = IF(read_at IS NULL, NOW(), read_at),
+            updated_at = NOW()
+    ");
+
+    return $stmt->execute([$notificationId, $userId]);
+}
+
+/**
+ * Dismisses / clears all visible notifications for a user.
+ *
+ * @param PDO $pdo
+ * @param int $userId
+ * @return int Number of dismissed notifications
+ */
+function dismiss_all_user_notifications(PDO $pdo, int $userId): int {
+    $stmt = $pdo->prepare("
+        SELECT n.id 
+        FROM notifications n
+        LEFT JOIN user_notifications un 
+               ON un.notification_id = n.id AND un.user_id = ?
+        WHERE n.status = 'active'
+          AND (
+               n.target_type = 'all' 
+               OR (n.target_type = 'specific_user' AND n.target_user_id = ?)
+               OR (n.target_type = 'all_except_user' AND (n.target_user_id IS NULL OR n.target_user_id != ?))
+          )
+          AND (n.expires_at IS NULL OR n.expires_at > NOW())
+          AND (un.is_dismissed IS NULL OR un.is_dismissed = 0)
+    ");
+    $stmt->execute([$userId, $userId, $userId]);
+    $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (empty($ids)) {
+        return 0;
+    }
+
+    $upsert = $pdo->prepare("
+        INSERT INTO user_notifications (
+            notification_id,
+            user_id,
+            is_read,
+            read_at,
+            is_dismissed,
+            created_at,
+            updated_at
+        ) VALUES (
+            ?,
+            ?,
+            1,
+            NOW(),
+            1,
+            NOW(),
+            NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+            is_dismissed = 1,
+            is_read = 1,
+            read_at = IF(read_at IS NULL, NOW(), read_at),
+            updated_at = NOW()
+    ");
+
+    $count = 0;
+    foreach ($ids as $nId) {
+        $upsert->execute([(int)$nId, $userId]);
+        $count++;
+    }
+
+    return $count;
 }
 
 /**

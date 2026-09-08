@@ -89,6 +89,77 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
+  void _showClearAllDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      useRootNavigator: true,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? AppColors.cardBackground : AppColors.lightSurfaceCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Clear all notifications?',
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+          ),
+        ),
+        content: Text(
+          'All notifications will be deleted and removed from your feed.',
+          style: TextStyle(
+            color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary,
+            fontSize: 14,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx, rootNavigator: true).pop(),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: isDark ? AppColors.textMuted : AppColors.lightTextMuted),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx, rootNavigator: true).pop();
+              HapticFeedback.mediumImpact();
+              ref.read(notificationsProvider.notifier).clearAllNotifications();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('All notifications cleared.'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Clear All'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteNotification(NotificationModel notif) {
+    HapticFeedback.lightImpact();
+    ref.read(notificationsProvider.notifier).deleteNotification(notif.id);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Notification "${notif.title}" deleted.'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   void _onNotificationTap(NotificationModel notif) {
     if (_isNavigating) return;
     _isNavigating = true;
@@ -113,7 +184,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           ),
         );
       }
-    } else if (notif.relatedType == 'recipe_submission') {
+    } else if (notif.relatedType == 'recipe_submission' || notif.relatedId == 'submissions') {
       try {
         context.pushNamed(RouteNames.mySubmissions);
       } catch (_) {
@@ -122,8 +193,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     } else if (notif.relatedType == 'feature') {
       if (notif.relatedId == 'hashtags' || notif.relatedId == 'search') {
         context.pushNamed(RouteNames.search);
+      } else if (notif.relatedId == 'submissions') {
+        context.pushNamed(RouteNames.mySubmissions);
       } else {
-        context.pushNamed(RouteNames.explore);
+        context.goNamed(RouteNames.explore);
       }
     } else {
       // General announcement or deep details
@@ -182,6 +255,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 ),
               ),
             ),
+          IconButton(
+            tooltip: 'Clear All',
+            icon: Icon(
+              Icons.delete_sweep_outlined,
+              size: 22,
+              color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+            ),
+            onPressed: _showClearAllDialog,
+          ),
           const SizedBox(width: 8),
         ],
       ),
@@ -245,6 +327,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   ref.read(notificationsProvider.notifier).markAsRead(n.id);
                                 }
                               },
+                              onDelete: () => _deleteNotification(n),
                             )),
                         const SizedBox(height: 12),
                       ],
@@ -260,6 +343,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   ref.read(notificationsProvider.notifier).markAsRead(n.id);
                                 }
                               },
+                              onDelete: () => _deleteNotification(n),
                             )),
                       ],
                     ],

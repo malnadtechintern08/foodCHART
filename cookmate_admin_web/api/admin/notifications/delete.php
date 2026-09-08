@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Admin API - Delete or Toggle Notification
+ * Food CHART Admin API - Delete or Toggle Notification
  * POST /api/admin/notifications/delete.php
  */
 

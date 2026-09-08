@@ -15,6 +15,8 @@ abstract class NotificationRemoteDataSource {
   Future<int> markAllAsRead();
   Future<bool> markAsUnread(int notificationId);
   Future<NotificationModel> getNotificationDetails(int notificationId);
+  Future<bool> deleteNotification(int notificationId);
+  Future<int> clearAllNotifications();
 }
 
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
@@ -110,7 +112,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
         Uri.parse(AppConstants.apiSessionEndpoint),
         method: 'POST',
         body: jsonEncode({
-          'display_name': prefs.getString(AppConstants.keyUserDisplayName) ?? 'CookMate User',
+          'display_name': prefs.getString(AppConstants.keyUserDisplayName) ?? 'Food CHART User',
           'device_info': Platform.operatingSystem,
           if (token != null && !token.startsWith('cm_')) 'auth_token': token,
         }),
@@ -252,9 +254,25 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       final decoded = jsonDecode(body);
       if (decoded is Map<String, dynamic> && decoded['success'] == true) {
         final List list = decoded['data'] ?? [];
-        return list.map((item) => NotificationModel.fromJson(item as Map<String, dynamic>)).toList();
+        final prefs = await SharedPreferences.getInstance();
+        final now = DateTime.now();
+
+        return list.map((item) {
+          final model = NotificationModel.fromJson(item as Map<String, dynamic>);
+          final key = 'notif_received_at_${model.id}';
+          final savedTimeStr = prefs.getString(key);
+          DateTime receivedTime;
+          if (savedTimeStr != null) {
+            receivedTime = DateTime.tryParse(savedTimeStr) ?? model.createdAt;
+          } else {
+            receivedTime = now;
+            prefs.setString(key, now.toIso8601String());
+          }
+          return model.copyWith(receivedAt: receivedTime);
+        }).where((m) => !m.isExpired).toList();
       }
     }
+
 
     try {
       final decoded = jsonDecode(response.body);
@@ -399,5 +417,63 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     }
 
     throw Exception('Failed to load notification details: HTTP ${response.statusCode}');
+  }
+
+  @override
+  Future<bool> deleteNotification(int notificationId) async {
+    final token = await _getOrInitAuthToken();
+    final uri = Uri.parse(AppConstants.apiNotificationsDeleteEndpoint);
+
+    try {
+      final response = await _sendRequest(
+        uri,
+        method: 'POST',
+        body: jsonEncode({'notification_id': notificationId}),
+        extraHeaders: {
+          'Authorization': 'Bearer $token',
+          'X-Cookmate-Token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final body = response.body.trim();
+        if (body.startsWith('{')) {
+          final decoded = jsonDecode(body);
+          return decoded is Map<String, dynamic> && decoded['success'] == true;
+        }
+      }
+    } catch (_) {}
+
+    return false;
+  }
+
+  @override
+  Future<int> clearAllNotifications() async {
+    final token = await _getOrInitAuthToken();
+    final uri = Uri.parse(AppConstants.apiNotificationsDeleteEndpoint);
+
+    try {
+      final response = await _sendRequest(
+        uri,
+        method: 'POST',
+        body: jsonEncode({'clear_all': true}),
+        extraHeaders: {
+          'Authorization': 'Bearer $token',
+          'X-Cookmate-Token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final body = response.body.trim();
+        if (body.startsWith('{')) {
+          final decoded = jsonDecode(body);
+          if (decoded is Map<String, dynamic> && decoded['success'] == true) {
+            return (decoded['deleted_count'] as num?)?.toInt() ?? 1;
+          }
+        }
+      }
+    } catch (_) {}
+
+    return 0;
   }
 }

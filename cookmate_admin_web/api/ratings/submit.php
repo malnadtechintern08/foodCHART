@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - App Rating & Feedback Submission Endpoint
+ * Food CHART REST API - App Rating & Feedback Submission Endpoint
  * 
  * POST /api/ratings/submit.php
  */
@@ -68,7 +68,7 @@ try {
 
     $category = trim($input['category'] ?? 'General Feedback');
     $feedback = trim($input['feedback'] ?? ($input['feedback_text'] ?? ($input['message'] ?? '')));
-    $userName = trim($input['user_name'] ?? ($input['name'] ?? 'CookMate User'));
+    $userName = trim($input['user_name'] ?? ($input['name'] ?? 'Food CHART User'));
     $userEmail = trim($input['user_email'] ?? ($input['email'] ?? ''));
     $deviceInfo = trim($input['device_info'] ?? ($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown Device'));
     $appVersion = trim($input['app_version'] ?? '2.0.0');
@@ -87,7 +87,7 @@ try {
         $stars,
         $category,
         $feedback,
-        !empty($userName) ? $userName : 'CookMate User',
+        !empty($userName) ? $userName : 'Food CHART User',
         !empty($userEmail) ? $userEmail : null,
         !empty($deviceInfo) ? $deviceInfo : null,
         $appVersion
@@ -97,7 +97,7 @@ try {
     http_response_code(201);
     echo json_encode([
         'status' => 'success',
-        'message' => 'Thank you for your feedback! Our team will work hard to improve CookMate.',
+        'message' => 'Thank you for your feedback! Our team will work hard to improve Food CHART.',
         'data' => [
             'id' => $ratingId,
             'stars' => $stars,

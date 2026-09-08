@@ -60,27 +60,27 @@ class SupportPageModel extends SupportPage {
       id: 'privacy-policy',
       title: 'Privacy Policy',
       slug: 'privacy-policy',
-      summary: 'Understand how CookMate collects, protects, and respects your culinary and device data.',
-      content: '''# CookMate Privacy Policy
+      summary: 'Understand how Food CHART collects, protects, and respects your culinary and device data.',
+      content: '''# Food CHART Privacy Policy
 
 **Effective Date:** January 1, 2026  
 **Last Updated:** September 5, 2026  
 
-Welcome to **CookMate**, your personal culinary and recipe companion dedicated to preserving authentic heritage cuisine. Your privacy is paramount to us. This Privacy Policy explains our practices regarding the collection, use, and disclosure of your information when you use our mobile application and website services.
+Welcome to **Food CHART**, your personal culinary and recipe companion dedicated to preserving authentic heritage cuisine. Your privacy is paramount to us. This Privacy Policy explains our practices regarding the collection, use, and disclosure of your information when you use our mobile application and website services.
 
 ---
 
 ### 1. Information We Collect
-CookMate is built with an **offline-first philosophy**. We minimize data collection to provide you with a seamless cooking experience:
+Food CHART is built with an **offline-first philosophy**. We minimize data collection to provide you with a seamless cooking experience:
 - **Device Preferences:** Selected theme mode (Dark/Light), active language preference, and serving multiplier.
 - **Local Culinary Data:** Favorites, recently viewed recipes, smart shopping lists, and personal kitchen notes are stored directly on your device's local database (SQLite) and are never transmitted to external servers without your permission.
 - **Recipe Submissions & Community Contributions:** When you voluntarily submit a recipe or feedback, we collect your contributor name, recipe details, ingredient measurements, preparation steps, and optional dish photos.
-- **Technical & Diagnostics:** Minimal anonymous performance logs and crash metrics to keep CookMate fast and reliable.
+- **Technical & Diagnostics:** Minimal anonymous performance logs and crash metrics to keep Food CHART fast and reliable.
 
 ---
 
 ### 2. Device Permissions
-CookMate only requests permissions strictly necessary to deliver app features:
+Food CHART only requests permissions strictly necessary to deliver app features:
 - **Camera & Photo Gallery:** Used solely when you choose to attach or take a photo for recipe submissions or dish notes. Photos remain private unless you publish them in a community submission.
 - **Notifications:** Used only to send you timer alerts during cooking and updates on your recipe submissions (you can disable these anytime in device settings).
 - **Storage / Files:** Used for exporting or backing up your notes and shopping list.
@@ -127,7 +127,7 @@ We may periodically update this policy to reflect new features or regulatory req
       id: 'contact-us',
       title: 'Contact Us',
       slug: 'contact-us',
-      summary: 'Get in touch with the CookMate team for recipe help, partnership inquiries, or app feedback.',
+      summary: 'Get in touch with the Food CHART team for recipe help, partnership inquiries, or app feedback.',
       content: '''### We Would Love to Hear From You!
 
 Whether you have questions about authentic Malnad recipes, want to report a bug, suggest new culinary features, or collaborate with our culinary research team, our friendly team is here to assist you.''',
@@ -136,7 +136,7 @@ Whether you have questions about authentic Malnad recipes, want to report a bug,
         'press_email': 'press@cookmate.app',
         'phone': '+91 (80) 4567-8900',
         'whatsapp': '+91 98765 43210',
-        'address': 'CookMate Culinary Labs, 4th Floor, Brigade Gateway, Malleshwaram, Bengaluru, Karnataka 560055, India',
+        'address': 'Food CHART Culinary Labs, 4th Floor, Brigade Gateway, Malleshwaram, Bengaluru, Karnataka 560055, India',
         'hours': 'Monday – Saturday: 9:00 AM – 6:00 PM IST',
         'social': {
           'instagram': '@cookmate_app',
@@ -154,10 +154,10 @@ Whether you have questions about authentic Malnad recipes, want to report a bug,
       id: 'help-center',
       title: 'Help Center',
       slug: 'help-center',
-      summary: 'Explore guides, step-by-step tutorials, and tips for making the most out of CookMate.',
-      content: '''# CookMate Help Center & User Guide
+      summary: 'Explore guides, step-by-step tutorials, and tips for making the most out of Food CHART.',
+      content: '''# Food CHART Help Center & User Guide
 
-Find answers, tutorials, and practical tips on using CookMate to master everyday cooking and authentic heritage recipes.
+Find answers, tutorials, and practical tips on using Food CHART to master everyday cooking and authentic heritage recipes.
 
 ---
 
@@ -189,7 +189,7 @@ Find answers, tutorials, and practical tips on using CookMate to master everyday
 ---
 
 ### 5. Offline Access & Data Sync
-- CookMate works **100% offline**. You can view recipes, use timers, and manage notes without cellular or Wi-Fi connectivity.
+- Food CHART works **100% offline**. You can view recipes, use timers, and manage notes without cellular or Wi-Fi connectivity.
 - When internet is available, tap the sync icon to fetch newly approved recipes and notification announcements.''',
       meta: {
         'topics': [
@@ -213,7 +213,7 @@ Find answers, tutorials, and practical tips on using CookMate to master everyday
       summary: 'Essential kitchen safety, food hygiene, allergen information, and community recipe guidelines.',
       content: '''# Safety, Hygiene & Community Guidelines
 
-At CookMate, your health and safety in the kitchen are just as important as the delicious dishes you prepare. Please review these essential guidelines.
+At Food CHART, your health and safety in the kitchen are just as important as the delicious dishes you prepare. Please review these essential guidelines.
 
 ---
 
@@ -240,7 +240,7 @@ At CookMate, your health and safety in the kitchen are just as important as the 
 ---
 
 ### 4. Community Recipe Submission Standards
-When submitting recipes to CookMate, contributors agree to uphold our community trust:
+When submitting recipes to Food CHART, contributors agree to uphold our community trust:
 - **Authenticity:** Submit accurate ingredients, realistic cooking times, and clear step-by-step instructions.
 - **Originality:** Share your own recipes or traditional family techniques. Do not copy copyrighted text from books or commercial websites.
 - **Photo Quality:** Upload genuine, high-quality photos of the actual prepared dish. Stock photos or irrelevant images will be rejected.

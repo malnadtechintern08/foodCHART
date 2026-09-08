@@ -1,8 +1,12 @@
 <?php
 /**
- * CookMate Web Admin - Global Header & Navigation Shell
+ * Food CHART Web Admin - Global Header & Navigation Shell
  */
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/admin_auth.php';
+require_admin_login();
+
+$currentAdmin = get_logged_in_admin();
 
 if (!isset($currentPage) || empty($currentPage)) {
     $currentPage = basename($_SERVER['PHP_SELF'] ?? '');
@@ -14,7 +18,7 @@ $flash = get_flash_message();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' • ' : '' ?>CookMate Admin</title>
+    <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' • ' : '' ?>Food CHART Admin</title>
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/app_icon.png">
     
     <!-- Google Fonts: Outfit (brand) & Plus Jakarta Sans (UI) -->
@@ -25,7 +29,7 @@ $flash = get_flash_message();
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CookMate Admin Brand CSS with cache buster -->
+    <!-- Food CHART Admin Brand CSS with cache buster -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= file_exists(__DIR__ . '/../assets/css/admin.css') ? filemtime(__DIR__ . '/../assets/css/admin.css') : time() ?>">
 </head>
 <body>
@@ -33,9 +37,9 @@ $flash = get_flash_message();
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
-            <img src="<?= BASE_URL ?>/assets/images/cookmate_logo.png" alt="CookMate Logo" class="sidebar-logo">
+            <img src="<?= BASE_URL ?>/assets/images/foodchart_logo.png" alt="Food CHART Logo" class="sidebar-logo">
             <div class="sidebar-brand-title">
-                <span class="brand-cookmate"><span class="cook-part">Cook</span><span class="mate-part">Mate</span></span>
+                <span class="brand-foodchart"><span class="food-part">Food </span><span class="chart-part">CHART</span></span>
                 <span class="sidebar-brand-subtitle">Admin Hub</span>
             </div>
         </div>
@@ -172,17 +176,43 @@ $flash = get_flash_message();
                 <i class="fa-solid fa-arrows-rotate"></i>
                 <span>Seed / Reset DB</span>
             </a>
+
+            <div class="nav-section-label">Account</div>
+
+            <a href="<?= BASE_URL ?>/logout.php" class="nav-item" style="color: #FF5252;" onclick="return confirm('Are you sure you want to sign out of Food CHART Admin?');">
+                <i class="fa-solid fa-right-from-bracket" style="color: #FF5252;"></i>
+                <span>Sign Out</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">
-            <a href="<?= PHPMYADMIN_URL ?>" target="_blank" class="pma-badge-btn" title="Open <?= htmlspecialchars(DB_NAME) ?> in phpMyAdmin">
+            <div style="padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--cm-border);">
+                <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--cm-primary); color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0;">
+                        <?= strtoupper(substr($currentAdmin['username'] ?? 'A', 0, 1)) ?>
+                    </div>
+                    <div style="overflow: hidden; line-height: 1.2;">
+                        <div style="font-size: 13px; font-weight: 700; color: #FFF; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                            <?= htmlspecialchars(str_ireplace(['CookMate Administrator', 'CookMate'], ['Food CHART Admin', 'Food CHART'], $currentAdmin['full_name'] ?? 'Food CHART Admin')) ?>
+                        </div>
+                        <div style="font-size: 11px; color: var(--cm-text-muted);">
+                            @<?= htmlspecialchars($currentAdmin['username'] ?? 'admin') ?>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= BASE_URL ?>/logout.php" title="Sign Out" style="color: #FF5252; padding: 6px; font-size: 13px;" onclick="return confirm('Sign out of Food CHART Admin?');">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+
+            <a href="<?= PHPMYADMIN_URL ?>" target="_blank" class="pma-badge-btn" title="Open Food CHART Database in phpMyAdmin">
                 <span><i class="fa-solid fa-database"></i> phpMyAdmin DB</span>
                 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i>
             </a>
             
             <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--cm-text-muted); padding: 4px 6px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; display: inline-block; box-shadow: 0 0 8px #4CAF50;"></span>
-                <span>MySQL: <code><?= htmlspecialchars(DB_NAME) ?></code></span>
+                <span>MySQL: <code>Food CHART DB</code></span>
             </div>
         </div>
     </aside>
@@ -216,6 +246,11 @@ $flash = get_flash_message();
                 <a href="<?= PHPMYADMIN_URL ?>" target="_blank" class="btn btn-secondary btn-sm" title="View in phpMyAdmin">
                     <i class="fa-solid fa-database" style="color: #FFB300;"></i>
                     <span>phpMyAdmin</span>
+                </a>
+
+                <a href="<?= BASE_URL ?>/logout.php" class="btn btn-secondary btn-sm" title="Sign Out of Food CHART Admin" onclick="return confirm('Sign out of Food CHART Admin?');" style="color: #FF5252; border-color: rgba(255, 82, 82, 0.3);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
                 </a>
             </div>
         </header>

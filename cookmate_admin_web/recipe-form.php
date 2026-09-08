@@ -1,9 +1,11 @@
 <?php
 /**
- * CookMate Web Admin - Comprehensive Recipe Editor (Create & Edit)
+ * Food CHART Web Admin - Comprehensive Recipe Editor (Create & Edit)
  */
 require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/includes/recipe_share_helper.php';
 $pdo = get_db_connection();
+ensure_custom_share_text_column($pdo);
 
 // Determine ID from GET or POST
 $id = trim($_POST['id'] ?? $_GET['id'] ?? '');
@@ -19,18 +21,29 @@ if (!empty($id)) {
 $isEdit = $existsInDb || (!empty($_POST['is_edit']) && $_POST['is_edit'] === '1');
 $pageTitle = $isEdit ? 'Edit Recipe' : 'Create New Recipe';
 
+$returnUrl = trim($_GET['return_url'] ?? $_POST['return_url'] ?? '');
+if (empty($returnUrl) && !empty($_SERVER['HTTP_REFERER'])) {
+    $refHost = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+    if (!$refHost || $refHost === ($_SERVER['HTTP_HOST'] ?? '')) {
+        $returnUrl = $_SERVER['HTTP_REFERER'];
+    }
+}
+$cancelUrl = !empty($returnUrl) ? $returnUrl : (BASE_URL . '/recipes.php');
+
+$defaultCategoryId = !empty($_GET['category_id']) ? trim($_GET['category_id']) : 'cat_malnad';
+
 $recipe = [
     'id' => !empty($id) ? $id : 'rec_' . bin2hex(random_bytes(4)),
     'title' => '',
     'description' => '',
-    'chef_name' => 'CookMate Chef',
+    'chef_name' => 'Food CHART Chef',
     'cuisine' => 'Karnataka',
     'image_url' => 'assets/images/recipes/akki_rotti.jpg',
     'prep_time_minutes' => 15,
     'cook_time_minutes' => 20,
     'servings' => 4,
     'difficulty' => 'Medium',
-    'category_id' => 'cat_malnad',
+    'category_id' => $defaultCategoryId,
     'tags' => 'Malnad Special, Karnataka, Heritage, South Indian',
     'is_favorite' => 0,
     'is_custom' => 1,
@@ -39,7 +52,9 @@ $recipe = [
     'region' => 'Malnad, Karnataka',
     'subcategory' => 'Breakfast',
     'nutrition' => '210 kcal | 8g Protein | 28g Carbs',
+    'custom_share_text' => '',
 ];
+
 
 $ingredients = [];
 $instructions = [];
@@ -100,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $title = trim($_POST['title'] ?? 'Untitled Recipe');
     $description = trim($_POST['description'] ?? '');
-    $chefName = trim($_POST['chef_name'] ?? 'CookMate Chef');
+    $chefName = trim($_POST['chef_name'] ?? 'Food CHART Chef');
     $cuisine = trim($_POST['cuisine'] ?? 'Indian');
     $region = trim($_POST['region'] ?? '');
     $subcategory = trim($_POST['subcategory'] ?? '');
@@ -116,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tags = trim($_POST['tags'] ?? '');
     $nutrition = trim($_POST['nutrition'] ?? '');
     $imageUrl = trim($_POST['image_url'] ?? '');
+    $customShareText = trim($_POST['custom_share_text'] ?? '');
 
     // Handle File Upload if present
     if (!empty($_FILES['image_file']['name']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
@@ -143,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     title = ?, description = ?, chef_name = ?, cuisine = ?, image_url = ?,
                     prep_time_minutes = ?, cook_time_minutes = ?, servings = ?, difficulty = ?,
                     category_id = ?, tags = ?, is_favorite = ?, is_custom = ?, is_vegetarian = ?,
-                    rating = ?, region = ?, subcategory = ?, nutrition = ?
+                    rating = ?, region = ?, subcategory = ?, nutrition = ?, custom_share_text = ?
                 WHERE id = ?
             ";
             $upStmt = $pdo->prepare($upSql);
@@ -152,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $prepTime, $cookTime, $servings, $difficulty,
                 $categoryId, $tags, $isFav, $isCustom, $isVeg,
                 $rating, $region, $subcategory, $nutrition,
+                $customShareText !== '' ? $customShareText : null,
                 $recipeId
             ]);
 
@@ -171,15 +188,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id, title, description, chef_name, cuisine, image_url,
                     prep_time_minutes, cook_time_minutes, servings, difficulty,
                     category_id, tags, is_favorite, is_custom, is_vegetarian,
-                    rating, region, subcategory, nutrition
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    rating, region, subcategory, nutrition, custom_share_text
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ";
             $inStmt = $pdo->prepare($inSql);
             $inStmt->execute([
                 $recipeId, $title, $description, $chefName, $cuisine, $imageUrl,
                 $prepTime, $cookTime, $servings, $difficulty,
                 $categoryId, $tags, $isFav, $isCustom, $isVeg,
-                $rating, $region, $subcategory, $nutrition
+                $rating, $region, $subcategory, $nutrition,
+                $customShareText !== '' ? $customShareText : null
             ]);
             if ($inStmt->rowCount() === 0) {
                 throw new Exception("Failed to insert recipe into database.");
@@ -249,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     create_system_notification($pdo, [
                         'title'               => 'New Recipe Added 🍲',
-                        'message'             => '"' . $title . '" is now available on CookMate. Tap to explore ingredients and steps!',
+                        'message'             => '"' . $title . '" is now available on Food CHART. Tap to explore ingredients and steps!',
                         'type'                => 'new_recipe',
                         'target_type'         => 'all',
                         'related_type'        => 'recipe',
@@ -265,7 +283,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         set_flash_message('success', "Recipe \"$title\" saved successfully!" . (!empty($_POST['notify_users']) ? " Notification broadcast to users." : ""));
-        header('Location: ' . BASE_URL . '/recipe-view.php?id=' . urlencode($recipeId));
+        $viewReturnParam = !empty($returnUrl) ? '&return_url=' . urlencode($returnUrl) : '';
+        header('Location: ' . BASE_URL . '/recipe-view.php?id=' . urlencode($recipeId) . $viewReturnParam);
         exit;
     } catch (Exception $e) {
         if ($pdo->inTransaction()) {
@@ -290,6 +309,7 @@ require_once __DIR__ . '/includes/header.php';
 <form method="POST" action="<?= BASE_URL ?>/recipe-form.php<?= $isEdit ? '?id=' . urlencode($recipe['id']) : '' ?>" enctype="multipart/form-data" id="recipeForm">
     <input type="hidden" name="id" value="<?= htmlspecialchars($recipe['id']) ?>">
     <input type="hidden" name="is_edit" value="<?= $isEdit ? '1' : '0' ?>">
+    <input type="hidden" name="return_url" value="<?= htmlspecialchars($returnUrl) ?>">
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <div>
@@ -297,12 +317,13 @@ require_once __DIR__ . '/includes/header.php';
             <p style="color: var(--cm-text-secondary); font-size: 13px;">ID: <code><?= htmlspecialchars($recipe['id']) ?></code></p>
         </div>
         <div style="display: flex; gap: 10px;">
-            <a href="<?= BASE_URL ?>/recipes.php" class="btn btn-secondary">Cancel</a>
+            <a href="<?= htmlspecialchars($cancelUrl) ?>" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-floppy-disk"></i> Save Recipe
             </button>
         </div>
     </div>
+
 
     <!-- Section 1: Basic Information -->
     <div class="card">
@@ -585,26 +606,56 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
+    <!-- Section 6: WhatsApp Promotional Share Teaser Customizer -->
+    <div class="card" style="border: 1px solid rgba(37, 211, 102, 0.35); background: rgba(37, 211, 102, 0.03); margin-bottom: 24px;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h3 class="card-title" style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 20px;"></i> WhatsApp Share & Teaser Customizer
+            </h3>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="autoGenerateFormWaTeaser()" style="font-weight: 700; color: #25D366; border-color: rgba(37, 211, 102, 0.4); border-radius: 8px;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Generate from Current Form
+            </button>
+        </div>
+
+        <p style="font-size: 13px; color: var(--cm-text-secondary); margin-bottom: 12px; line-height: 1.5;">
+            Customize the promotional message sent when this recipe is shared to WhatsApp. Leave blank to automatically use the standard locked teaser with key ingredients preview, locked steps, and the Food CHART Play Store download CTA.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <textarea name="custom_share_text" id="customShareTextInput" class="form-control" rows="8"
+                style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.5; background: #0c0c0c; color: #e9edef; border: 1px solid #2e2e2e; border-radius: 10px; padding: 12px;"
+                placeholder="Leave blank for standard auto-generated teaser, or customize message here..."><?= htmlspecialchars($recipe['custom_share_text'] ?? '') ?></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: var(--cm-text-muted);">
+            <span>Format: Recipe name, category, prep, servings, locked preview, and Food CHART app download link.</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="copyFormWaText()" style="padding: 2px 10px; font-size: 11px;">
+                <i class="fa-regular fa-copy"></i> Copy Text
+            </button>
+        </div>
+    </div>
+
     <!-- Notification Section -->
     <div class="card" style="border: 1px solid rgba(229, 9, 21, 0.35); background: rgba(229, 9, 21, 0.04); margin-bottom: 24px;">
         <div style="display: flex; align-items: center; gap: 12px;">
             <input type="checkbox" name="notify_users" id="notify_users" value="1" <?= !$isEdit ? 'checked' : '' ?> style="width: 20px; height: 20px; accent-color: var(--cm-primary); cursor: pointer;">
             <label for="notify_users" style="cursor: pointer; font-size: 15px; font-weight: 700; color: #FFF; margin: 0;">
-                <?= $isEdit ? '✨ Notify CookMate users about this recipe update' : '🍲 Notify CookMate users about this new recipe' ?>
+                <?= $isEdit ? '✨ Notify Food CHART users about this recipe update' : '🍲 Notify Food CHART users about this new recipe' ?>
             </label>
         </div>
         <p style="margin: 6px 0 0 32px; font-size: 13px; color: var(--cm-text-secondary); line-height: 1.4;">
-            <?= $isEdit ? 'Sends a notification to all users that this recipe has new instructions, ingredients, or cooking tips.' : 'Broadcasts an automatic arrival notification to the in-app notification center for all CookMate users.' ?>
+            <?= $isEdit ? 'Sends a notification to all users that this recipe has new instructions, ingredients, or cooking tips.' : 'Broadcasts an automatic arrival notification to the in-app notification center for all Food CHART users.' ?>
         </p>
     </div>
 
     <!-- Bottom Save Action Bar -->
     <div style="display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 40px;">
-        <a href="<?= BASE_URL ?>/recipes.php" class="btn btn-secondary">Cancel</a>
+        <a href="<?= htmlspecialchars($cancelUrl) ?>" class="btn btn-secondary">Cancel</a>
         <button type="submit" class="btn btn-primary" style="padding: 14px 36px; font-size: 16px;">
             <i class="fa-solid fa-check"></i> Save Recipe
         </button>
     </div>
+
 </form>
 
 <script>
@@ -949,6 +1000,107 @@ function addAllSuggestedHashtags() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', initHashtags);
+
+function autoGenerateFormWaTeaser() {
+    const title = document.querySelector('input[name="title"]')?.value.trim() || 'Delicious Recipe';
+    const desc = document.querySelector('textarea[name="description"]')?.value.trim() || '';
+    const catSelect = document.querySelector('select[name="category_id"]');
+    const catName = (catSelect && catSelect.selectedIndex >= 0) ? catSelect.options[catSelect.selectedIndex].text.trim() : 'Malnad Special';
+    const isVeg = document.getElementById('vegToggle')?.checked;
+    const prep = document.querySelector('input[name="prep_time_minutes"]')?.value || '15';
+    const cook = document.querySelector('input[name="cook_time_minutes"]')?.value || '20';
+    const servings = document.querySelector('input[name="servings"]')?.value || '4';
+    const rating = document.querySelector('input[name="rating"]')?.value || '4.8';
+
+    const ingInputs = document.querySelectorAll('input[name="ing_name[]"]');
+    const amtInputs = document.querySelectorAll('input[name="ing_amount[]"]');
+    const unitInputs = document.querySelectorAll('input[name="ing_unit[]"]');
+    const stepInputs = document.querySelectorAll('textarea[name="step_text[]"]');
+
+    const lines = [];
+    lines.push('🍛 *' + title + '*');
+    if (desc) {
+        lines.push(desc);
+    }
+    lines.push('');
+
+    const dietBadge = isVeg ? 'Pure Veg 🌱' : 'Non-Veg 🍗';
+    lines.push('🏷 *Category:* ' + catName + ' • ' + dietBadge);
+    lines.push('⏱ *Prep:* ' + prep + ' mins | *Cook:* ' + cook + ' mins');
+    lines.push('👥 *Servings:* ' + servings + ' | ⭐ *Rating:* ' + parseFloat(rating).toFixed(1) + '/5.0');
+    lines.push('');
+
+    // Ingredients
+    const validIngs = [];
+    for (let i = 0; i < ingInputs.length; i++) {
+        const name = ingInputs[i].value.trim();
+        if (name) {
+            const amt = amtInputs[i]?.value.trim() || '';
+            const unit = unitInputs[i]?.value.trim() || '';
+            validIngs.push((amt ? amt + ' ' : '') + (unit ? unit + ' ' : '') + name);
+        }
+    }
+
+    if (validIngs.length > 0) {
+        lines.push('🛒 *KEY INGREDIENTS PREVIEW:*');
+        const showCount = Math.min(2, validIngs.length);
+        for (let i = 0; i < showCount; i++) {
+            lines.push('• ' + validIngs[i]);
+        }
+        const hidden = validIngs.length - showCount;
+        if (hidden > 0) {
+            lines.push('🔒 _+ ' + hidden + ' more ingredients hidden in Food CHART_');
+        }
+        lines.push('');
+    }
+
+    // Steps
+    const validSteps = [];
+    for (let i = 0; i < stepInputs.length; i++) {
+        const s = stepInputs[i].value.trim();
+        if (s) validSteps.push(s);
+    }
+
+    if (validSteps.length > 0) {
+        lines.push('👩‍🍳 *METHOD PREVIEW:*');
+        let s1 = validSteps[0];
+        if (s1.length > 90) s1 = s1.substring(0, 87) + '...';
+        lines.push('1. ' + s1);
+        if (validSteps.length > 1) {
+            lines.push('🔒 _Steps 2 to ' + validSteps.length + ' are locked in the app_');
+        }
+        lines.push('');
+    }
+
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+    lines.push('📲 *Unlock Full Recipe, Ingredients & Cooking Timers:*');
+    lines.push('👉 Download *Food CHART* (100% Free & Offline):');
+    lines.push('https://play.google.com/store/apps/details?id=com.food.chart');
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+
+    const finalTeaser = lines.join('\n');
+    const input = document.getElementById('customShareTextInput');
+    if (input) {
+        input.value = finalTeaser;
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.focus();
+    }
+}
+
+function copyFormWaText() {
+    const input = document.getElementById('customShareTextInput');
+    if (!input || !input.value.trim()) {
+        alert('Please auto-generate or enter a teaser first!');
+        return;
+    }
+    navigator.clipboard.writeText(input.value).then(() => {
+        alert('WhatsApp teaser copied to clipboard!');
+    }).catch(() => {
+        input.select();
+        document.execCommand('copy');
+        alert('WhatsApp teaser copied to clipboard!');
+    });
+}
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

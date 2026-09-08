@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Support & Legal Page Endpoint
+ * Food CHART REST API - Support & Legal Page Endpoint
  * 
  * GET /api/support/page.php?slug=privacy-policy
  * GET /api/support/page.php?slug=contact-us

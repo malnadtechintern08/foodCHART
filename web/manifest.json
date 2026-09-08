@@ -1,11 +1,11 @@
 {
-    "name": "CookMate",
-    "short_name": "CookMate",
+    "name": "Food CHART",
+    "short_name": "Food CHART",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0D0D0D",
     "theme_color": "#E50914",
-    "description": "CookMate - Smart Indian Cooking Companion & Interactive Recipe Guide",
+    "description": "Food CHART - Smart Indian Cooking Companion & Interactive Recipe Guide",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

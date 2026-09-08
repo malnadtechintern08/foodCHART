@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Edit / Create Support & Policy Page
+ * Food CHART Web Admin - Edit / Create Support & Policy Page
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();
@@ -166,7 +166,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                         <div class="form-group">
                             <label class="form-label">Support Email</label>
-                            <input type="email" name="contact_email" class="form-control" value="<?= htmlspecialchars($currentMeta['support_email'] ?? 'support@cookmate.app') ?>">
+                            <input type="email" name="contact_email" class="form-control" value="<?= htmlspecialchars($currentMeta['support_email'] ?? 'support@foodchart.app') ?>">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Support Phone Number</label>

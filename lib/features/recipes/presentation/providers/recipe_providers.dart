@@ -84,8 +84,11 @@ final syncRecipesWithServerProvider = FutureProvider.autoDispose<List<Recipe>>((
   ref.invalidate(allRecipesProvider);
   ref.invalidate(quickLaunchRecipesProvider);
   ref.invalidate(favoriteRecipesProvider);
+  ref.invalidate(categoriesProvider);
+  ref.invalidate(categoryRecipesProvider);
   return updatedRecipes;
 });
+
 
 final quickLaunchRecipesProvider = FutureProvider.autoDispose<List<Recipe>>((ref) async {
   final useCase = ref.watch(getQuickLaunchRecipesUseCaseProvider);

@@ -132,7 +132,7 @@ enum NotificationType {
       case NotificationType.recipeUpdated:
         return 'Recipe Updated';
       case NotificationType.adminAnnouncement:
-        return 'CookMate Update';
+        return 'Food CHART Update';
       case NotificationType.newFeature:
         return 'New Feature';
       case NotificationType.recipeApproved:

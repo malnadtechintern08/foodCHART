@@ -16,6 +16,7 @@ import '../providers/recently_viewed_provider.dart';
 import '../providers/recipe_providers.dart';
 import '../../../rating/services/rating_service.dart';
 import '../../../tags/presentation/providers/tag_providers.dart';
+import '../../services/recipe_share_service.dart';
 import '../widgets/ingredient_list_widget.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
@@ -194,6 +195,17 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                         ),
                       ),
                     ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black.withValues(alpha: 0.55),
+                      child: IconButton(
+                        icon: const Icon(Icons.share_rounded, color: Colors.white, size: 20),
+                        tooltip: l10n.shareRecipe,
+                        onPressed: () => RecipeShareService.showShareModal(context, recipe),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
@@ -484,6 +496,52 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                             ),
                           ),
                           onPressed: () => _addIngredientsToShopping(recipe),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Share to WhatsApp Direct Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(14),
+                            onTap: () => RecipeShareService.shareToWhatsApp(context, recipe),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF25D366), Color(0xFF1EBE5D)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF25D366).withValues(alpha: 0.28),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 20),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    l10n.shareToWhatsApp,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 28),

@@ -23,7 +23,7 @@ void main() {
 
     test('English AppLocalizations resolve keys and parameter interpolation', () {
       final loc = AppLocalizationsEn();
-      expect(loc.appName, equals('CookMate'));
+      expect(loc.appName, equals('Food CHART'));
       expect(loc.whatsCookingToday, equals("What's cooking today?"));
       expect(loc.stepOf(2, 5), equals('Step 2 of 5'));
       expect(loc.itemsToBuy(4), equals('4 items to buy'));
@@ -35,7 +35,7 @@ void main() {
 
     test('Kannada AppLocalizations resolve authentic Kannada text', () {
       final loc = AppLocalizationsKn();
-      expect(loc.appName, equals('CookMate'));
+      expect(loc.appName, equals('Food CHART'));
       expect(loc.whatsCookingToday, equals('ಇಂದು ಏನು ಅಡುಗೆ ಮಾಡಬೇಕು?'));
       expect(loc.stepOf(1, 4), equals('ಹಂತ 1 / 4'));
       expect(loc.itemsToBuy(3), equals('3 ವಸ್ತುಗಳು ಖರೀದಿಸಬೇಕಿದೆ'));
@@ -50,7 +50,7 @@ void main() {
 
     test('Hindi AppLocalizations resolve authentic Hindi text', () {
       final loc = AppLocalizationsHi();
-      expect(loc.appName, equals('CookMate'));
+      expect(loc.appName, equals('Food CHART'));
       expect(loc.whatsCookingToday, equals('आज क्या बनाना है?'));
       expect(loc.stepOf(3, 6), equals('चरण 3 / 6'));
       expect(loc.itemsToBuy(5), equals('5 सामान खरीदना है'));

@@ -48,15 +48,15 @@ class FaqModel extends FaqItem {
       FaqModel(
         id: 1,
         category: 'General',
-        question: 'What is CookMate and who is it for?',
-        answer: 'CookMate is an all-in-one culinary companion designed for food enthusiasts, home cooks, and lovers of authentic regional cuisine. It brings together heritage recipes (such as Malnad specialties) alongside modern pan-Indian classics with offline support, step-by-step timers, and smart grocery checklists.',
+        question: 'What is Food CHART and who is it for?',
+        answer: 'Food CHART is an all-in-one culinary companion designed for food enthusiasts, home cooks, and lovers of authentic regional cuisine. It brings together heritage recipes (such as Malnad specialties) alongside modern pan-Indian classics with offline support, step-by-step timers, and smart grocery checklists.',
         sortOrder: 1,
       ),
       FaqModel(
         id: 2,
         category: 'General',
-        question: 'Does CookMate work without an internet connection?',
-        answer: 'Yes! CookMate is built offline-first. All core recipes, instructions, ingredients, notes, and timers function completely offline. An internet connection is only needed when syncing newly published community recipes or submitting your own recipes for review.',
+        question: 'Does Food CHART work without an internet connection?',
+        answer: 'Yes! Food CHART is built offline-first. All core recipes, instructions, ingredients, notes, and timers function completely offline. An internet connection is only needed when syncing newly published community recipes or submitting your own recipes for review.',
         sortOrder: 2,
       ),
       FaqModel(
@@ -76,7 +76,7 @@ class FaqModel extends FaqItem {
       FaqModel(
         id: 5,
         category: 'Submissions',
-        question: 'How do I submit my own family recipe to CookMate?',
+        question: 'How do I submit my own family recipe to Food CHART?',
         answer: 'Navigate to "My Kitchen" or the side drawer and select "Submit Recipe". Enter the title, preparation time, servings, ingredients, instructions, and optionally upload a photo of your dish. Once submitted, our editorial team reviews it before publishing it to the community.',
         sortOrder: 5,
       ),

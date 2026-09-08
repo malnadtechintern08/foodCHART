@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Database Connection Diagnostic Tool
+ * Food CHART Web Admin - Database Connection Diagnostic Tool
  * 
  * Verifies connectivity, active database, table schemas, and PDO configuration.
  */
@@ -86,7 +86,7 @@ if ($isCli) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CookMate Database Diagnostic</title>
+    <title>Food CHART Database Diagnostic</title>
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/app_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -235,9 +235,9 @@ if ($isCli) {
 <body>
     <div class="diag-card">
         <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
-            <img src="<?= BASE_URL ?>/assets/images/cookmate_logo.png" style="height: 42px;" alt="CookMate Logo">
-            <span class="brand-cookmate" style="font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.5px;display:inline-flex;align-items:baseline;">
-                <span class="cook-part" style="color:#FFFFFF !important;font-weight:800;">Cook</span><span class="mate-part" style="color:#E50915 !important;font-weight:800;">Mate</span>
+            <img src="<?= BASE_URL ?>/assets/images/foodchart_logo.png" style="height: 42px;" alt="Food CHART Logo">
+            <span style="font-size: 24px;">
+                <?= cookmate_brand_html() ?>
             </span>
         </div>
 

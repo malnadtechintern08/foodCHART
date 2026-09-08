@@ -6,12 +6,14 @@ class NotificationCard extends StatelessWidget {
   final NotificationModel notification;
   final VoidCallback onTap;
   final VoidCallback? onToggleRead;
+  final VoidCallback? onDelete;
 
   const NotificationCard({
     super.key,
     required this.notification,
     required this.onTap,
     this.onToggleRead,
+    this.onDelete,
   });
 
   @override
@@ -24,10 +26,10 @@ class NotificationCard extends StatelessWidget {
         : (isDark ? const Color(0xFF161616) : const Color(0xFFF7F7F7));
 
     final cardBorderColor = isUnread
-        ? (isDark ? AppColors.primary.withOpacity(0.4) : AppColors.primary.withOpacity(0.3))
-        : (isDark ? AppColors.border.withOpacity(0.6) : AppColors.lightBorder);
+        ? (isDark ? AppColors.primary.withValues(alpha: 0.4) : AppColors.primary.withValues(alpha: 0.3))
+        : (isDark ? AppColors.border.withValues(alpha: 0.6) : AppColors.lightBorder);
 
-    return Container(
+    final cardContent = Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: BoxDecoration(
         color: cardBg,
@@ -36,7 +38,7 @@ class NotificationCard extends StatelessWidget {
         boxShadow: isUnread
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.08),
+                  color: AppColors.primary.withValues(alpha: 0.08),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
@@ -59,10 +61,10 @@ class NotificationCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: notification.type.color.withOpacity(0.14),
+                    color: notification.type.color.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: notification.type.color.withOpacity(0.25),
+                      color: notification.type.color.withValues(alpha: 0.25),
                       width: 1,
                     ),
                   ),
@@ -109,22 +111,22 @@ class NotificationCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 14.5,
                                 fontWeight: isUnread ? FontWeight.w800 : FontWeight.w600,
-                                color: isDark
-                                    ? (isUnread ? Colors.white : AppColors.textSecondary)
-                                    : (isUnread ? Colors.black87 : AppColors.lightTextSecondary),
-                                letterSpacing: -0.1,
+                                color: isDark ? Colors.white : Colors.black87,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 8),
                           Text(
-                            notification.timeAgoFormatted,
+                            notification.timeWithClockFormatted,
                             style: TextStyle(
+
                               fontSize: 11,
                               fontWeight: isUnread ? FontWeight.w700 : FontWeight.w500,
-                              color: isUnread ? AppColors.primary : AppColors.textMuted,
+                              color: isUnread
+                                  ? AppColors.primary
+                                  : (isDark ? AppColors.textMuted : AppColors.lightTextMuted),
                             ),
                           ),
                         ],
@@ -173,8 +175,8 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ),
 
-                // Popup menu for quick status toggling
-                if (onToggleRead != null) ...[
+                // Popup menu for quick status toggling and deletion
+                if (onToggleRead != null || onDelete != null) ...[
                   PopupMenuButton<String>(
                     icon: Icon(
                       Icons.more_vert_rounded,
@@ -188,32 +190,57 @@ class NotificationCard extends StatelessWidget {
                       side: BorderSide(color: isDark ? AppColors.border : AppColors.lightBorder),
                     ),
                     onSelected: (val) {
-                      if (val == 'toggle') {
+                      if (val == 'toggle' && onToggleRead != null) {
                         onToggleRead!();
+                      } else if (val == 'delete' && onDelete != null) {
+                        onDelete!();
                       }
                     },
                     itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'toggle',
-                        child: Row(
-                          children: [
-                            Icon(
-                              isUnread ? Icons.done_all_rounded : Icons.mark_as_unread_rounded,
-                              size: 18,
-                              color: AppColors.primary,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              isUnread ? 'Mark as read' : 'Mark as unread',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : Colors.black87,
+                      if (onToggleRead != null)
+                        PopupMenuItem(
+                          value: 'toggle',
+                          child: Row(
+                            children: [
+                              Icon(
+                                isUnread ? Icons.done_all_rounded : Icons.mark_as_unread_rounded,
+                                size: 18,
+                                color: AppColors.primary,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 10),
+                              Text(
+                                isUnread ? 'Mark as read' : 'Mark as unread',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      if (onDelete != null)
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete_outline_rounded,
+                                size: 18,
+                                color: AppColors.error,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Delete notification',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                 ],
@@ -223,5 +250,40 @@ class NotificationCard extends StatelessWidget {
         ),
       ),
     );
+
+    if (onDelete != null) {
+      return Dismissible(
+        key: ValueKey('notif_card_${notification.id}'),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) => onDelete!(),
+        background: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: AppColors.error,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          alignment: Alignment.centerRight,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'Delete',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+              SizedBox(width: 6),
+              Icon(Icons.delete_rounded, color: Colors.white, size: 20),
+            ],
+          ),
+        ),
+        child: cardContent,
+      );
+    }
+
+    return cardContent;
   }
 }

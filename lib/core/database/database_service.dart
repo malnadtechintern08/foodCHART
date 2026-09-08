@@ -50,15 +50,29 @@ class DatabaseService {
         version: AppConstants.dbVersion,
         onCreate: _onCreate,
         onUpgrade: (db, oldVersion, newVersion) async {
-          if (oldVersion < 5) {
-            // Drop and re-create catalog tables for clean synchronization with 50-recipe catalog
+          if (oldVersion < 6) {
+            // Backup user-created custom recipes before re-seeding catalog
+            List<Map<String, dynamic>> customRecipes = [];
+            try {
+              customRecipes = await db.query('recipes', where: 'is_custom = 1');
+            } catch (_) {}
+
+            // Drop and re-create catalog tables for clean synchronization with full 120-recipe catalog
             await db.execute('DROP TABLE IF EXISTS instructions');
             await db.execute('DROP TABLE IF EXISTS ingredients');
             await db.execute('DROP TABLE IF EXISTS recipes');
             await db.execute('DROP TABLE IF EXISTS categories');
             await _onCreate(db, newVersion);
+
+            // Restore custom user recipes if any
+            for (final r in customRecipes) {
+              try {
+                await db.insert('recipes', r);
+              } catch (_) {}
+            }
           }
         },
+
         onOpen: (db) async {
           await db.execute('''
             CREATE TABLE IF NOT EXISTS notes (

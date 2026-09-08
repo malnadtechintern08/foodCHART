@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Export Data Tools (JSON & Dart Seed Format)
+ * Food CHART Web Admin - Export Data Tools (JSON & Dart Seed Format)
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();
@@ -24,15 +24,18 @@ if ($action === 'download_json') {
     }
 
     header('Content-Type: application/json; charset=utf-8');
-    header('Content-Disposition: attachment; filename="cookmate_recipes_' . date('Y-m-d') . '.json"');
+    header('Content-Disposition: attachment; filename="foodchart_recipes_' . date('Y-m-d') . '.json"');
     echo json_encode(['categories' => $categories, 'recipes' => $recipes], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 if ($action === 'download_sql') {
     header('Content-Type: application/sql; charset=utf-8');
-    header('Content-Disposition: attachment; filename="cookmate_backup_' . date('Y-m-d') . '.sql"');
-    $sqlFile = __DIR__ . '/data/seed_data.sql';
+    header('Content-Disposition: attachment; filename="foodchart_database_' . date('Y-m-d') . '.sql"');
+    $sqlFile = __DIR__ . '/foodchart_database.sql';
+    if (!file_exists($sqlFile)) {
+        $sqlFile = __DIR__ . '/data/seed_data.sql';
+    }
     if (file_exists($sqlFile)) {
         readfile($sqlFile);
     }

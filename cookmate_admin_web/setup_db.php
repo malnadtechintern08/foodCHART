@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - 1-Click Database Setup & Reset
+ * Food CHART Web Admin - 1-Click Database Setup & Reset
  */
 require_once __DIR__ . '/config/db.php';
 
@@ -37,7 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['auto'])) {
             }
         }
 
-        $sqlFile = __DIR__ . '/data/seed_data.sql';
+        $sqlFile = __DIR__ . '/foodchart_database.sql';
+        if (!file_exists($sqlFile)) {
+            $sqlFile = __DIR__ . '/data/seed_data.sql';
+        }
         if (!file_exists($sqlFile)) {
             throw new Exception("Seed SQL file not found at " . $sqlFile);
         }
@@ -94,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['auto'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CookMate Admin - Database Setup</title>
+    <title>Food CHART Admin - Database Setup</title>
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/app_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -218,9 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['auto'])) {
 </head>
 <body>
     <div class="setup-card">
-        <img src="<?= BASE_URL ?>/assets/images/cookmate_logo.png" alt="CookMate" class="logo-img">
-        <h1><span class="brand-cookmate" style="font-family:'Outfit',sans-serif;font-weight:800;display:inline-flex;align-items:baseline;"><span class="cook-part" style="color:#FFFFFF !important;font-weight:800;">Cook</span><span class="mate-part" style="color:#E50915 !important;font-weight:800;">Mate</span></span> Database Setup</h1>
-        <p class="subtitle">Initialize the MySQL database <code><?= htmlspecialchars(DB_NAME) ?></code> and import 50 authentic recipes and 8 categories directly into phpMyAdmin.</p>
+        <img src="<?= BASE_URL ?>/assets/images/foodchart_logo.png" alt="Food CHART Logo" class="logo-img">
+        <h1><?= cookmate_brand_html() ?> Database Setup</h1>
+        <p class="subtitle">Initialize the MySQL database and import 50 authentic recipes, 8 categories, hashtags, notifications, and policy pages directly into phpMyAdmin.</p>
 
         <?php if ($message): ?>
             <div class="alert alert-<?= $status ?>">

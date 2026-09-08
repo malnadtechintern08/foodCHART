@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Admin API - Update Notification
+ * Food CHART Admin API - Update Notification
  * POST /api/admin/notifications/update.php
  */
 

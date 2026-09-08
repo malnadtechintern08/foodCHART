@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/router/route_names.dart';
+import '../../../../core/services/app_share_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -167,8 +168,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                                           color: isDark ? Colors.white : AppColors.lightTextPrimary,
                                         ),
                                         children: [
-                                          TextSpan(text: 'Cook', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.w900)),
-                                          const TextSpan(text: 'Mate', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900)),
+                                          TextSpan(text: 'Food ', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.w900)),
+                                          const TextSpan(text: 'CHART', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900)),
                                         ],
                                       ),
                                     ),
@@ -198,6 +199,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                               tooltip: 'Submit Recipe for Review',
                             ),
                             const NotificationBell(),
+                            IconButton(
+                              onPressed: () => AppShareService.showShareAppModal(context),
+                              icon: const Icon(Icons.share_rounded, size: 21),
+                              padding: const EdgeInsets.all(6),
+                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              tooltip: l10n.shareApp,
+                            ),
                             IconButton(
                               onPressed: () => context.pushNamed(RouteNames.settings),
                               icon: const Icon(Icons.settings_outlined, size: 22),

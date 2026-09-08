@@ -1,6 +1,6 @@
 {
   "@@locale": "kn",
-  "appName": "CookMate",
+  "appName": "Food CHART",
   "appTagline": "ನಿಮ್ಮ ಆಫ್‌ಲೈನ್ ಮಾಸ್ಟರ್ ಅಡುಗೆ ಒಡನಾಡಿ",
   "navHome": "ಮುಖಪುಟ",
   "navExplore": "ಅನ್ವೇಷಿಸಿ",
@@ -178,7 +178,7 @@
   "resetConfirmTitle": "ಮರುಹೊಂದಿಸುವುದೇ?",
   "resetConfirmDesc": "ಇದು ಎಲ್ಲಾ ಡೀಫಾಲ್ಟ್ ಪಾಕವಿಧಾನಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ.",
   "about": "ಬಗ್ಗೆ",
-  "aboutCookMate": "ಕುಕ್‌ಮೇಟ್ ಬಗ್ಗೆ",
+  "aboutCookMate": "Food CHART ಬಗ್ಗೆ",
   "versionText": "ಆವೃತ್ತಿ 2.0.0 • ಭಾರತೀಯ ಪಾಕ ಆವೃತ್ತಿ",
   "selectLanguageTitle": "ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
   "english": "English",
@@ -251,5 +251,15 @@
   "catIngredientNote": "ಪದಾರ್ಥಗಳ ಟಿಪ್ಪಣಿ",
   "catMalnadRecipe": "ಮಲೆನಾಡು ಪಾಕವಿಧಾನ",
   "catPersonalNote": "ವೈಯಕ್ತಿಕ ಟಿಪ್ಪಣಿ",
-  "catOther": "ಇತರೆ"
+  "catOther": "ಇತರೆ",
+  "shareRecipe": "ರೆಸಿಪಿ ಹಂಚಿಕೊಳ್ಳಿ",
+  "shareToWhatsApp": "WhatsApp ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ",
+  "shareMoreOptions": "ಇತರ ಆಯ್ಕೆಗಳು",
+  "copyRecipeText": "ರೆಸಿಪಿ ಪಠ್ಯ ನಕಲಿಸಿ",
+  "recipeCopiedToClipboard": "ರೆಸಿಪಿಯನ್ನು ನಕಲಿಸಲಾಗಿದೆ! 📋",
+  "shareRecipeSubtitle": "ಈ ರುಚಿಕರವಾದ ಅಡುಗೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ",
+  "shareApp": "Food CHART ಅಪ್ಲಿಕೇಶನ್ ಹಂಚಿಕೊಳ್ಳಿ",
+  "shareAppSubtitle": "WhatsApp, Quick Share, Bluetooth ಮೂಲಕ ಹಂಚಿಕೊಳ್ಳಿ",
+  "shareAppQuickShareBluetooth": "Quick Share, Bluetooth ಮತ್ತು ಇತರೆ",
+  "shareAppLinkCopied": "Food CHART ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ! 📋"
 }

@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app/router/app_router.dart';
 import '../../../app/router/route_names.dart';
+import '../../../app/router/route_paths.dart';
 import '../data/models/notification_model.dart';
 
 /// Top-level background notification tap handler required by flutter_local_notifications
@@ -21,9 +22,9 @@ class CookMateNotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static const String channelId = 'cookmate_notifications';
-  static const String channelName = 'CookMate Notifications';
+  static const String channelName = 'Food CHART Notifications';
   static const String channelDescription =
-      'High-priority CookMate updates, recipe approvals, and culinary announcements';
+      'High-priority Food CHART updates, recipe approvals, and culinary announcements';
 
   static const String keyShownIds = 'cookmate_shown_notification_ids';
   static const String keyPermissionRequested = 'cookmate_notification_permission_requested';
@@ -53,7 +54,7 @@ class CookMateNotificationService {
 
     // Linux settings
     const linuxSettings = LinuxInitializationSettings(
-      defaultActionName: 'Open CookMate',
+      defaultActionName: 'Open Food CHART',
     );
 
     final initSettings = InitializationSettings(
@@ -192,16 +193,16 @@ class CookMateNotificationService {
       channelDescription: channelDescription,
       importance: Importance.max, // High-priority popup banner
       priority: Priority.high, // Heads-up display
-      ticker: 'CookMate Notification',
+      ticker: 'Food CHART Notification',
       playSound: true,
       enableVibration: true,
       vibrationPattern: Int64List.fromList([0, 250, 250, 250]),
       icon: '@mipmap/ic_launcher',
-      color: const Color(0xFFE50914), // CookMate Brand Crimson Red
+      color: const Color(0xFFE50914), // Food CHART Brand Crimson Red
       styleInformation: BigTextStyleInformation(
         notification.message,
         contentTitle: notification.title,
-        summaryText: 'CookMate 🍳',
+        summaryText: 'Food CHART 🍳',
         htmlFormatContent: false,
         htmlFormatContentTitle: false,
       ),
@@ -235,7 +236,7 @@ class CookMateNotificationService {
 
   /// Trigger a live heads-up notification for immediate test / demonstration.
   Future<void> showTestNotification({
-    String title = 'CookMate 🍳',
+    String title = 'Food CHART 🍳',
     String message = 'Your recipe "Masala Dosa" was approved! ✅',
   }) async {
     final testId = DateTime.now().millisecondsSinceEpoch % 100000;
@@ -255,7 +256,7 @@ class CookMateNotificationService {
       channelDescription: channelDescription,
       importance: Importance.max,
       priority: Priority.high,
-      ticker: 'CookMate Test',
+      ticker: 'Food CHART Test',
       playSound: true,
       enableVibration: true,
       vibrationPattern: Int64List.fromList([0, 250, 250, 250]),
@@ -264,7 +265,7 @@ class CookMateNotificationService {
       styleInformation: BigTextStyleInformation(
         message,
         contentTitle: title,
-        summaryText: 'CookMate 🍳',
+        summaryText: 'Food CHART 🍳',
       ),
       category: AndroidNotificationCategory.status,
       visibility: NotificationVisibility.public,
@@ -307,10 +308,18 @@ class CookMateNotificationService {
     } catch (_) {}
   }
 
+  DateTime? _lastNotificationTapTime;
+
   /// Handles notification click and navigates to the appropriate screen.
   void _handleNotificationTap(String? payloadStr) {
+    final now = DateTime.now();
+    if (_lastNotificationTapTime != null && now.difference(_lastNotificationTapTime!).inMilliseconds < 800) {
+      return; // Debounce rapid multi-triggers
+    }
+    _lastNotificationTapTime = now;
+
     if (payloadStr == null || payloadStr.isEmpty) {
-      AppRouter.router.pushNamed(RouteNames.notifications);
+      _safeNavigateToNotifications();
       return;
     }
 
@@ -322,33 +331,81 @@ class CookMateNotificationService {
       final notifId = payload['notification_id'];
 
       if (relatedType == 'recipe' && relatedId != null && relatedId.isNotEmpty) {
-        AppRouter.router.push('/recipe/$relatedId');
+        _safeNavigateToRecipe(relatedId);
         return;
       }
 
       if (type == 'recipe_approved') {
         if (relatedId != null && relatedId.isNotEmpty) {
-          AppRouter.router.push('/recipe/$relatedId');
+          _safeNavigateToRecipe(relatedId);
         } else {
-          AppRouter.router.pushNamed(RouteNames.mySubmissions);
+          _safeNavigateToSubmissions();
         }
         return;
       }
 
       if (type == 'new_recipe' && relatedId != null && relatedId.isNotEmpty) {
-        AppRouter.router.push('/recipe/$relatedId');
+        _safeNavigateToRecipe(relatedId);
         return;
       }
 
       if (notifId != null && notifId is int) {
-        AppRouter.router.push('/notification/$notifId');
+        _safeNavigateToNotificationDetail(notifId);
         return;
       }
 
       // Default route
+      _safeNavigateToNotifications();
+    } catch (_) {
+      _safeNavigateToNotifications();
+    }
+  }
+
+  void _safeNavigateToNotifications() {
+    try {
+      final currentLoc = AppRouter.router.routerDelegate.currentConfiguration.uri.path;
+      if (currentLoc == RoutePaths.notifications) return;
       AppRouter.router.pushNamed(RouteNames.notifications);
     } catch (_) {
-      AppRouter.router.pushNamed(RouteNames.notifications);
+      try {
+        AppRouter.router.pushNamed(RouteNames.notifications);
+      } catch (_) {}
+    }
+  }
+
+  void _safeNavigateToRecipe(String recipeId) {
+    try {
+      final currentLoc = AppRouter.router.routerDelegate.currentConfiguration.uri.path;
+      if (currentLoc == '/recipe/$recipeId') return;
+      AppRouter.router.push('/recipe/$recipeId');
+    } catch (_) {
+      try {
+        AppRouter.router.push('/recipe/$recipeId');
+      } catch (_) {}
+    }
+  }
+
+  void _safeNavigateToNotificationDetail(int notifId) {
+    try {
+      final currentLoc = AppRouter.router.routerDelegate.currentConfiguration.uri.path;
+      if (currentLoc == '/notification/$notifId') return;
+      AppRouter.router.push('/notification/$notifId');
+    } catch (_) {
+      try {
+        AppRouter.router.push('/notification/$notifId');
+      } catch (_) {}
+    }
+  }
+
+  void _safeNavigateToSubmissions() {
+    try {
+      final currentLoc = AppRouter.router.routerDelegate.currentConfiguration.uri.path;
+      if (currentLoc == RoutePaths.mySubmissions) return;
+      AppRouter.router.pushNamed(RouteNames.mySubmissions);
+    } catch (_) {
+      try {
+        AppRouter.router.pushNamed(RouteNames.mySubmissions);
+      } catch (_) {}
     }
   }
 

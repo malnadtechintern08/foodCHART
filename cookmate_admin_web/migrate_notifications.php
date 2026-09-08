@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate - Notification System Database Migration Runner
+ * Food CHART - Notification System Database Migration Runner
  * Creates notifications and user_notifications tables, verifies indexes,
  * and seeds initial demo notifications.
  */
@@ -66,7 +66,7 @@ try {
         $starterNotifs = [
             [
                 'title' => 'New Recipe Added 🍲',
-                'message' => 'Chicken Ghee Roast is now available on CookMate. Explore this authentic coastal delicacy!',
+                'message' => 'Chicken Ghee Roast is now available on Food CHART. Explore this authentic coastal delicacy!',
                 'type' => 'new_recipe',
                 'target_type' => 'all',
                 'target_user_id' => null,
@@ -101,7 +101,7 @@ try {
                 'created_by_admin_id' => 1
             ],
             [
-                'title' => '📢 CookMate Community Update',
+                'title' => '📢 Food CHART Community Update',
                 'message' => 'Welcome to the new interactive notification center. Stay up to date with new recipes, approvals, and kitchen tips!',
                 'type' => 'admin_announcement',
                 'target_type' => 'all',
@@ -142,9 +142,9 @@ try {
 }
 
 if (php_sapi_name() === 'cli') {
-    echo "=== CookMate Notifications Migration ===" . PHP_EOL;
-    foreach ($messages as $m) {
-        echo strip_tags($m) . PHP_EOL;
+    echo "=== Food CHART Notifications Migration ===" . PHP_EOL;
+    foreach ($messages as $msg) {
+        echo strip_tags($msg) . PHP_EOL;
     }
     exit(0);
 }
@@ -152,7 +152,7 @@ if (php_sapi_name() === 'cli') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CookMate - Notifications Migration</title>
+    <title>Food CHART - Notifications Migration</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0E0E0E; color: #FFF; padding: 40px; }
         .card { max-width: 600px; margin: 0 auto; background: #1A1A1A; border: 1px solid #262626; border-radius: 12px; padding: 24px; }

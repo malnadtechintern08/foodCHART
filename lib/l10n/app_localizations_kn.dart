@@ -10,7 +10,7 @@ class AppLocalizationsKn extends AppLocalizations {
   AppLocalizationsKn([String locale = 'kn']) : super(locale);
 
   @override
-  String get appName => 'CookMate';
+  String get appName => 'Food CHART';
 
   @override
   String get appTagline => 'ನಿಮ್ಮ ಆಫ್‌ಲೈನ್ ಮಾಸ್ಟರ್ ಅಡುಗೆ ಒಡನಾಡಿ';
@@ -541,7 +541,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get about => 'ಬಗ್ಗೆ';
 
   @override
-  String get aboutCookMate => 'ಕುಕ್‌ಮೇಟ್ ಬಗ್ಗೆ';
+  String get aboutCookMate => 'Food CHART ಬಗ್ಗೆ';
 
   @override
   String get versionText => 'ಆವೃತ್ತಿ 2.0.0 • ಭಾರತೀಯ ಪಾಕ ಆವೃತ್ತಿ';
@@ -759,4 +759,36 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get catOther => 'ಇತರೆ';
+
+  @override
+  String get shareRecipe => 'ರೆಸಿಪಿ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get shareToWhatsApp => 'WhatsApp ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get shareMoreOptions => 'ಇತರ ಆಯ್ಕೆಗಳು';
+
+  @override
+  String get copyRecipeText => 'ರೆಸಿಪಿ ಪಠ್ಯ ನಕಲಿಸಿ';
+
+  @override
+  String get recipeCopiedToClipboard => 'ರೆಸಿಪಿಯನ್ನು ನಕಲಿಸಲಾಗಿದೆ! 📋';
+
+  @override
+  String get shareRecipeSubtitle =>
+      'ಈ ರುಚಿಕರವಾದ ಅಡುಗೆಯನ್ನು WhatsApp ನಲ್ಲಿ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get shareApp => 'Food CHART ಅಪ್ಲಿಕೇಶನ್ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get shareAppSubtitle =>
+      'WhatsApp, Quick Share, Bluetooth ಮೂಲಕ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get shareAppQuickShareBluetooth => 'Quick Share, Bluetooth ಮತ್ತು ಇತರೆ';
+
+  @override
+  String get shareAppLinkCopied => 'Food CHART ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ! 📋';
 }

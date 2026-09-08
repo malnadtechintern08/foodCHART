@@ -1,7 +1,7 @@
 <?php
 /**
- * CookMate Web Admin - Recipe Submissions & Moderation Hub
- * Native CookMate Design System
+ * Food CHART Web Admin - Recipe Submissions & Moderation Hub
+ * Native Food CHART Design System
  */
 
 require_once __DIR__ . '/config/db.php';
@@ -100,7 +100,7 @@ require_once __DIR__ . '/includes/header.php';
             <span>Recipe Submissions Moderation</span>
         </h1>
         <p style="color: var(--cm-text-muted); font-size: 13px; margin: 6px 0 0;">
-            Review user-contributed recipes, moderate content, verify publication consent, and publish directly into CookMate.
+            Review user-contributed recipes, moderate content, verify publication consent, and publish directly into Food CHART.
         </p>
     </div>
     <div>
@@ -169,7 +169,7 @@ require_once __DIR__ . '/includes/header.php';
         'pending' => ['label' => 'Pending Review', 'count' => $pendingCount],
         'changes_requested' => ['label' => 'Changes Requested', 'count' => $changesCount],
         'approved' => ['label' => 'Approved (Internal)', 'count' => (int)$pdo->query("SELECT COUNT(*) FROM recipe_submissions WHERE status = 'approved'")->fetchColumn()],
-        'published' => ['label' => 'Published in CookMate', 'count' => $publishedCount],
+        'published' => ['label' => 'Published in Food CHART', 'count' => $publishedCount],
         'rejected' => ['label' => 'Rejected', 'count' => $rejectedCount],
     ];
     foreach ($tabs as $key => $tab):
@@ -237,7 +237,7 @@ require_once __DIR__ . '/includes/header.php';
                         'under_review' => ['bg' => 'rgba(33, 150, 243, 0.15)', 'color' => '#42A5F5', 'icon' => 'fa-spinner', 'text' => 'Under Review'],
                         'changes_requested' => ['bg' => 'rgba(255, 112, 67, 0.15)', 'color' => '#FF7043', 'icon' => 'fa-rotate-left', 'text' => 'Changes Requested'],
                         'approved' => ['bg' => 'rgba(76, 175, 80, 0.15)', 'color' => '#81C784', 'icon' => 'fa-check', 'text' => 'Approved (Internal)'],
-                        'published' => ['bg' => 'rgba(46, 125, 50, 0.25)', 'color' => '#4CAF50', 'icon' => 'fa-circle-check', 'text' => 'Published in CookMate'],
+                        'published' => ['bg' => 'rgba(46, 125, 50, 0.25)', 'color' => '#4CAF50', 'icon' => 'fa-circle-check', 'text' => 'Published in Food CHART'],
                         'rejected' => ['bg' => 'rgba(244, 67, 54, 0.15)', 'color' => '#EF5350', 'icon' => 'fa-ban', 'text' => 'Rejected'],
                         default => ['bg' => '#222', 'color' => '#CCC', 'icon' => 'fa-question', 'text' => $sub['status']]
                     };

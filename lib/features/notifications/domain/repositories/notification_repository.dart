@@ -7,4 +7,6 @@ abstract class NotificationRepository {
   Future<int> markAllAsRead();
   Future<bool> markAsUnread(int notificationId);
   Future<NotificationModel> getNotificationDetails(int notificationId);
+  Future<bool> deleteNotification(int notificationId);
+  Future<int> clearAllNotifications();
 }

@@ -76,7 +76,7 @@ class HelpCenterScreen extends ConsumerWidget {
                       Text(
                         page.summary.isNotEmpty
                             ? page.summary
-                            : 'Learn how to master every culinary feature in CookMate, from smart filters to recipe moderation.',
+                            : 'Learn how to master every culinary feature in Food CHART, from smart filters to recipe moderation.',
                         style: TextStyle(
                           fontSize: 13.5,
                           color: isDark ? Colors.white70 : AppColors.lightTextSecondary,
@@ -161,7 +161,7 @@ class HelpCenterScreen extends ConsumerWidget {
                   icon: Icons.add_circle_outline_rounded,
                   title: '4. Submitting Your Own Recipes',
                   description:
-                      'Share your secret family recipes with the CookMate community! Fill out the submission form with preparation times, ingredients, instructions, and dish photos. Track review status under "My Submissions".',
+                      'Share your secret family recipes with the Food CHART community! Fill out the submission form with preparation times, ingredients, instructions, and dish photos. Track review status under "My Submissions".',
                   isDark: isDark,
                 ),
                 const SizedBox(height: 12),
@@ -170,7 +170,7 @@ class HelpCenterScreen extends ConsumerWidget {
                   icon: Icons.wifi_off_rounded,
                   title: '5. Offline First Experience',
                   description:
-                      'CookMate is designed to work in kitchens with weak or no Wi-Fi. Recipes, notes, and timers are saved locally on your phone. Whenever you reconnect, tap sync to fetch newly approved recipes.',
+                      'Food CHART is designed to work in kitchens with weak or no Wi-Fi. Recipes, notes, and timers are saved locally on your phone. Whenever you reconnect, tap sync to fetch newly approved recipes.',
                   isDark: isDark,
                 ),
                 const SizedBox(height: 40),

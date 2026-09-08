@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Production Database Configuration Template
+ * Food CHART Web Admin - Production Database Configuration Template
  * Rename or copy this file to config/db.php on your server
  */
 

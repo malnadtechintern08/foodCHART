@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/router/route_names.dart';
+import '../../../../core/services/app_share_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_empty_state.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -47,6 +48,11 @@ class _MyRecipesScreenState extends ConsumerState<MyRecipesScreen> with SingleTi
       appBar: AppBar(
         title: Text(l10n.myKitchenTitle),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.share_rounded),
+            tooltip: l10n.shareApp,
+            onPressed: () => AppShareService.showShareAppModal(context),
+          ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settingsTitle,

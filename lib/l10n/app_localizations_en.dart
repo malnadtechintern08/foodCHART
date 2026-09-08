@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'CookMate';
+  String get appName => 'Food CHART';
 
   @override
   String get appTagline => 'Your Offline Master Culinary Companion';
@@ -542,7 +542,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'ABOUT';
 
   @override
-  String get aboutCookMate => 'About CookMate';
+  String get aboutCookMate => 'About Food CHART';
 
   @override
   String get versionText => 'Version 2.0.0 • Indian Culinary Edition';
@@ -759,4 +759,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catOther => 'Other';
+
+  @override
+  String get shareRecipe => 'Share Recipe';
+
+  @override
+  String get shareToWhatsApp => 'Share on WhatsApp';
+
+  @override
+  String get shareMoreOptions => 'More Sharing Options';
+
+  @override
+  String get copyRecipeText => 'Copy Recipe Text';
+
+  @override
+  String get recipeCopiedToClipboard => 'Recipe copied to clipboard! 📋';
+
+  @override
+  String get shareRecipeSubtitle =>
+      'Share this delicious dish with family & friends on WhatsApp';
+
+  @override
+  String get shareApp => 'Share Food CHART App';
+
+  @override
+  String get shareAppSubtitle =>
+      'Share via WhatsApp, Quick Share, Bluetooth & more';
+
+  @override
+  String get shareAppQuickShareBluetooth => 'Quick Share, Bluetooth & More';
+
+  @override
+  String get shareAppLinkCopied =>
+      'Food CHART app link copied to clipboard! 📋';
 }

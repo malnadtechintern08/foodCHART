@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -125,7 +124,7 @@ class RatingRemoteDataSourceImpl implements RatingRemoteDataSource {
       'stars': stars,
       'category': category,
       'feedback_text': feedbackText,
-      'user_name': userName ?? 'CookMate User',
+      'user_name': userName ?? 'Food CHART User',
       'user_email': userEmail,
       'device_info': deviceInfo,
       'app_version': appVersion,
@@ -136,7 +135,11 @@ class RatingRemoteDataSourceImpl implements RatingRemoteDataSource {
 
     for (final url in endpoints) {
       try {
-        final isInfinityFree = url.contains('cookmate.free.nf');
+        final isInfinityFree = url.contains('.free.nf') ||
+            url.contains('infinityfree') ||
+            url.contains('cookmate') ||
+            url.contains('foodchart') ||
+            url.contains('foodcart');
         if (isInfinityFree) {
           await _ensureInfinityFreeCookie();
         }

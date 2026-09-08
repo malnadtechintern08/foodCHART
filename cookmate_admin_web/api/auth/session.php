@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - User Authentication Session Endpoint
+ * Food CHART API - User Authentication Session Endpoint
  * POST /api/auth/session.php
  */
 

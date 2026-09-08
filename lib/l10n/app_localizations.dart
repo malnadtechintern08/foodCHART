@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'CookMate'**
+  /// **'Food CHART'**
   String get appName;
 
   /// No description provided for @appTagline.
@@ -1105,7 +1105,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutCookMate.
   ///
   /// In en, this message translates to:
-  /// **'About CookMate'**
+  /// **'About Food CHART'**
   String get aboutCookMate;
 
   /// No description provided for @versionText.
@@ -1533,6 +1533,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get catOther;
+
+  /// No description provided for @shareRecipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Recipe'**
+  String get shareRecipe;
+
+  /// No description provided for @shareToWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share on WhatsApp'**
+  String get shareToWhatsApp;
+
+  /// No description provided for @shareMoreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More Sharing Options'**
+  String get shareMoreOptions;
+
+  /// No description provided for @copyRecipeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Recipe Text'**
+  String get copyRecipeText;
+
+  /// No description provided for @recipeCopiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe copied to clipboard! 📋'**
+  String get recipeCopiedToClipboard;
+
+  /// No description provided for @shareRecipeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this delicious dish with family & friends on WhatsApp'**
+  String get shareRecipeSubtitle;
+
+  /// No description provided for @shareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Food CHART App'**
+  String get shareApp;
+
+  /// No description provided for @shareAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share via WhatsApp, Quick Share, Bluetooth & more'**
+  String get shareAppSubtitle;
+
+  /// No description provided for @shareAppQuickShareBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Share, Bluetooth & More'**
+  String get shareAppQuickShareBluetooth;
+
+  /// No description provided for @shareAppLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Food CHART app link copied to clipboard! 📋'**
+  String get shareAppLinkCopied;
 }
 
 class _AppLocalizationsDelegate

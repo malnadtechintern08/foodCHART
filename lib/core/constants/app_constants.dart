@@ -1,8 +1,9 @@
 class AppConstants {
-  static const String appName = 'CookMate';
+  static const String appName = 'Food CHART';
   static const String appTagline = 'Your Personal Kitchen Companion';
   static const String dbName = 'cookmate.db';
-  static const int dbVersion = 5;
+  static const int dbVersion = 6;
+
 
   // Shared Preferences Keys
   static const String keyThemeMode = 'cookmate_theme_mode';
@@ -22,7 +23,7 @@ class AppConstants {
   static const int maxRecentlyViewed = 10;
 
   // Live Backend Server API Configuration
-  static const String apiBaseUrl = 'https://cookmate.free.nf';
+  static const String apiBaseUrl = 'https://foodchart.free.nf';
   static const String apiRecipesEndpoint = '$apiBaseUrl/api/recipes.php';
   static const String apiCategoriesEndpoint = '$apiBaseUrl/api/categories.php';
   static const String apiTagsPopularEndpoint = '$apiBaseUrl/api/tags/popular.php';
@@ -48,6 +49,7 @@ class AppConstants {
   static const String apiNotificationsMarkAllReadEndpoint = '$apiBaseUrl/api/notifications/mark-all-read.php';
   static const String apiNotificationsMarkUnreadEndpoint = '$apiBaseUrl/api/notifications/mark-unread.php';
   static const String apiNotificationsDetailsEndpoint = '$apiBaseUrl/api/notifications/details.php';
+  static const String apiNotificationsDeleteEndpoint = '$apiBaseUrl/api/notifications/delete.php';
 
   // Support, FAQs & Policy APIs
   static const String apiSupportPageEndpoint = '$apiBaseUrl/api/support/page.php';

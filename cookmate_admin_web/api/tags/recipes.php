@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Recipes by Hashtag
+ * Food CHART REST API - Recipes by Hashtag
  * 
  * GET /api/tags/recipes.php?tag=rice&page=1&limit=20
  * Also supports multiple tags: ?tag=rice,veg (AND logic)

@@ -5,9 +5,9 @@ import 'package:cookmate/core/database/seed_data.dart';
 
 void main() {
   group('Recipe Unique Images Verification Suite', () {
-    test('Verify exactly 50 recipes in SeedData with unique IDs and titles', () {
+    test('Verify exactly 110 recipes in SeedData with unique IDs and titles', () {
       final recipes = SeedData.recipes;
-      expect(recipes.length, 50, reason: 'TOTAL RECIPES must equal 50');
+      expect(recipes.length, 120, reason: 'TOTAL RECIPES must equal 120');
 
       final ids = <String>{};
       final titles = <String>{};
@@ -27,11 +27,11 @@ void main() {
 
       expect(duplicateIds, isEmpty, reason: 'Duplicate recipe IDs detected: $duplicateIds');
       expect(duplicateTitles, isEmpty, reason: 'Duplicate recipe titles detected: $duplicateTitles');
-      expect(ids.length, 50);
-      expect(titles.length, 50);
+      expect(ids.length, 120);
+      expect(titles.length, 120);
     });
 
-    test('Verify 50 unique image paths in SeedData', () {
+    test('Verify 120 unique image paths in SeedData', () {
       final recipes = SeedData.recipes;
       final imagePaths = <String>{};
       final duplicatePaths = <String>[];
@@ -45,10 +45,10 @@ void main() {
       }
 
       expect(duplicatePaths, isEmpty, reason: 'DUPLICATE IMAGE PATHS must be 0, found: $duplicatePaths');
-      expect(imagePaths.length, 50, reason: 'VALID IMAGE PATHS must equal 50');
+      expect(imagePaths.length, 120, reason: 'VALID IMAGE PATHS must equal 120');
     });
 
-    test('Verify all 50 image asset files exist on disk and are valid non-empty images', () {
+    test('Verify all 120 image asset files exist on disk and are valid non-empty images', () {
       final recipes = SeedData.recipes;
       final missingFiles = <String>[];
       final emptyFiles = <String>[];
@@ -68,7 +68,7 @@ void main() {
       expect(emptyFiles, isEmpty, reason: 'RECIPES USING PLACEHOLDERS must be 0, tiny/empty: $emptyFiles');
     });
 
-    test('Verify ZERO DUPLICATE IMAGE FILES (all 50 MD5 hashes are 100% unique)', () {
+    test('Verify ZERO DUPLICATE IMAGE FILES (all 120 MD5 hashes are 100% unique)', () {
       final recipes = SeedData.recipes;
       final hashes = <String, String>{};
       final duplicateFiles = <String>[];
@@ -97,8 +97,9 @@ void main() {
         isEmpty,
         reason: 'DUPLICATE IMAGE FILES must be 0! Found duplicates:\n${duplicateFiles.join("\n")}',
       );
-      expect(hashes.length, 50, reason: 'All 50 recipes must have 50 unique MD5 hashes');
+      expect(hashes.length, 120, reason: 'All 120 recipes must have 120 unique MD5 hashes');
     });
+
 
     test('Verify key traditional dishes have valid dish-specific filenames', () {
       final recipes = SeedData.recipes;

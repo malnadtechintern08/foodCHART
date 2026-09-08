@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Submit Recipe for Moderation
+ * Food CHART API - Submit Recipe for Moderation
  * POST /api/recipe-submissions/create.php
  * Accepts multipart/form-data or application/json.
  */
@@ -48,7 +48,7 @@ $notes = trim($input['notes'] ?? '');
 $allowPublication = (int)($input['allow_publication'] ?? 0) === 1 ? 1 : 0;
 $showAuthorName = (int)($input['show_author_name'] ?? 0) === 1 ? 1 : 0;
 if (empty($authorDisplayName)) {
-    $authorDisplayName = trim($user['display_name'] ?? 'CookMate Chef');
+    $authorDisplayName = trim($user['display_name'] ?? 'Food CHART Chef');
 }
 $permissionGivenAt = $allowPublication ? date('Y-m-d H:i:s') : null;
 

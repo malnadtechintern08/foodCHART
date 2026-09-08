@@ -83,11 +83,14 @@ class NotificationsNotifier extends StateNotifier<AsyncValue<List<NotificationMo
     }
 
     try {
-      final list = await _repository.getNotifications(page: 1, limit: 50, filter: filter);
+      final list = (await _repository.getNotifications(page: 1, limit: 50, filter: filter))
+          .where((n) => !n.isExpired)
+          .toList();
       state = AsyncValue.data(list);
       // Synchronize unread count
       final unreadCount = list.where((n) => !n.isRead).length;
       _unreadNotifier.setCount(unreadCount);
+
     } catch (e, stack) {
       if (isRefresh && state.hasValue) {
         // Keep existing list on transient network error during pull-to-refresh
@@ -158,6 +161,37 @@ class NotificationsNotifier extends StateNotifier<AsyncValue<List<NotificationMo
         await _repository.markAsUnread(notificationId);
       } catch (_) {}
     }
+  }
+
+  Future<void> deleteNotification(int notificationId) async {
+    final currentList = state.valueOrNull;
+    if (currentList == null) return;
+
+    final targetIndex = currentList.indexWhere((n) => n.id == notificationId);
+    if (targetIndex != -1) {
+      final item = currentList[targetIndex];
+      final updatedList = List<NotificationModel>.from(currentList)..removeAt(targetIndex);
+      state = AsyncValue.data(updatedList);
+      if (!item.isRead) {
+        _unreadNotifier.decrement();
+      }
+
+      try {
+        await _repository.deleteNotification(notificationId);
+      } catch (_) {}
+    }
+  }
+
+  Future<void> clearAllNotifications() async {
+    final currentList = state.valueOrNull;
+    if (currentList == null || currentList.isEmpty) return;
+
+    state = const AsyncValue.data(<NotificationModel>[]);
+    _unreadNotifier.reset();
+
+    try {
+      await _repository.clearAllNotifications();
+    } catch (_) {}
   }
 }
 

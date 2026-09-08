@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Contact Inquiries Manager
+ * Food CHART Web Admin - Contact Inquiries Manager
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();

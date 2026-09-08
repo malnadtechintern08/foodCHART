@@ -1,6 +1,6 @@
-# 🚀 CookMate Admin Web & Database Deployment Guide
+# 🚀 Food CHART Admin Web & Database Deployment Guide
 
-This guide walks you through deploying the **CookMate Admin Web Panel** and its **MySQL Database** to any live production hosting server (such as cPanel, Hostinger, GoDaddy, Plesk, AWS, DigitalOcean, Apache, or LiteSpeed).
+This guide walks you through deploying the **Food CHART Admin Web Panel** and its **MySQL Database** to any live production hosting server (such as InfinityFree, cPanel, Hostinger, GoDaddy, Plesk, AWS, DigitalOcean, Apache, or LiteSpeed).
 
 ---
 
@@ -8,8 +8,8 @@ This guide walks you through deploying the **CookMate Admin Web Panel** and its 
 
 You have everything prepared and packaged:
 
-1. **Admin Web Zip**: [`cookmate_admin_production.zip`](file:///Users/apple/Desktop/CookMate/cookmate_admin_production.zip) *(21 MB - complete with all 200 food images, styles, scripts, and security configs)*
-2. **Database SQL File**: [`database/cookmate_database.sql`](file:///Users/apple/Desktop/CookMate/database/cookmate_database.sql) *(533 KB - contains full schema, 8 categories, 200 recipes, 1,065 ingredients, and 800 instructions)*
+1. **Admin Web Zip**: [`foodchart_admin_production.zip`](file:///Users/apple/Desktop/CookMate/foodchart_admin_production.zip) (or [`cookmate_admin_production.zip`](file:///Users/apple/Desktop/CookMate/cookmate_admin_production.zip)) *(complete with food images, styles, scripts, and security configs)*
+2. **Database SQL File**: [`cookmate_admin_web/foodchart_database.sql`](file:///Users/apple/Desktop/CookMate/cookmate_admin_web/foodchart_database.sql) *(complete schema, 8 categories, 50 core recipes, all ingredients, instructions, tags, submissions, notifications, support pages, FAQs, and admin credentials)*
 3. **Database Configuration**: [`cookmate_admin_web/config/db.php`](file:///Users/apple/Desktop/CookMate/cookmate_admin_web/config/db.php)
 
 ---
@@ -18,31 +18,24 @@ You have everything prepared and packaged:
 
 ### Step 1: Create & Import Database
 
-1. Log into your hosting control panel (e.g. **cPanel**, **hPanel**, or **Plesk**).
+1. Log into your hosting control panel (e.g. **InfinityFree**, **cPanel**, **hPanel**, or **Plesk**).
 2. Go to **MySQL Databases**:
-   - Create a new database (e.g., `u123456_cookmate`).
-   - Create a new database user (e.g., `u123456_cookuser`) with a strong password.
-   - Assign the user to the database with **ALL PRIVILEGES**.
+   - Create or select your database.
 3. Open **phpMyAdmin**:
-   - Click on your newly created database on the left sidebar.
+   - Click on your database on the left sidebar.
    - Click the **Import** tab at the top.
-   - Choose [`cookmate_database.sql`](file:///Users/apple/Desktop/CookMate/database/cookmate_database.sql) from your computer.
+   - Choose [`foodchart_database.sql`](file:///Users/apple/Desktop/CookMate/cookmate_admin_web/foodchart_database.sql) from your computer.
    - Click **Import** (or **Go**).
-   - ✅ All 4 tables (`categories`, `recipes`, `recipe_ingredients`, `recipe_instructions`) and all 200 recipes will be imported instantly!
+   - ✅ All 21 tables (`categories`, `recipes`, `tags`, `admin_users`, `notifications`, `support_pages`, `faqs`, etc.) will be imported instantly!
 
 ---
 
 ### Step 2: Upload Admin Web Code
 
 1. In your hosting panel, open **File Manager** (or connect via **FTP/SFTP**).
-2. Choose where to host the admin panel:
-   - **Main Domain / Subdomain** (e.g. `https://admin.yourdomain.com`):
-     Go to the website's document root (typically `public_html/`).
-   - **Subdirectory** (e.g. `https://yourdomain.com/cookmate-admin`):
-     Create a folder named `cookmate-admin` inside `public_html/`.
-3. Upload [`cookmate_admin_production.zip`](file:///Users/apple/Desktop/CookMate/cookmate_admin_production.zip).
-4. Right-click the zip file and choose **Extract**.
-5. Ensure the extracted files (including `.htaccess`) are placed in the folder.
+2. Upload [`foodchart_admin_production.zip`](file:///Users/apple/Desktop/CookMate/foodchart_admin_production.zip) (or [`foodchart_admin_light.zip`](file:///Users/apple/Desktop/CookMate/foodchart_admin_light.zip)) into `htdocs/`.
+3. Right-click the zip file and choose **Extract**.
+4. Ensure the extracted files (including `.htaccess`) are placed in the folder.
 
 ---
 

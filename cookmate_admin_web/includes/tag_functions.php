@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate - Hashtag Helper Functions
+ * Food CHART - Hashtag Helper Functions
  * Reusable normalization, validation, and relational synchronization.
  */
 

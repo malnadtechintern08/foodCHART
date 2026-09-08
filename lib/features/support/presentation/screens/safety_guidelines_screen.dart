@@ -185,7 +185,7 @@ class SafetyGuidelinesScreen extends ConsumerWidget {
                 const SizedBox(height: 10),
                 _buildGuidelineCard(
                   title: 'Respectful, Family-Friendly Content',
-                  desc: 'CookMate is an inclusive culinary sanctuary. Promotional ads, spam, and abusive language are strictly filtered.',
+                  desc: 'Food CHART is an inclusive culinary sanctuary. Promotional ads, spam, and abusive language are strictly filtered.',
                   isDark: isDark,
                 ),
                 const SizedBox(height: 40),

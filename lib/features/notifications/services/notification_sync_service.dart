@@ -67,7 +67,6 @@ class NotificationSyncService with WidgetsBindingObserver {
       try {
         await Workmanager().initialize(
           notificationWorkManagerDispatcher,
-          isInDebugMode: false,
         );
 
         await Workmanager().registerPeriodicTask(

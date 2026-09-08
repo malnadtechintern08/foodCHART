@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - Get Full Submission Details
+ * Food CHART API - Get Full Submission Details
  * GET /api/recipe-submissions/details.php?id=123
  */
 

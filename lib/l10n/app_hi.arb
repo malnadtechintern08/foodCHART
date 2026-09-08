@@ -1,6 +1,6 @@
 {
   "@@locale": "hi",
-  "appName": "CookMate",
+  "appName": "Food CHART",
   "appTagline": "आपका ऑफलाइन मास्टर कुकिंग साथी",
   "navHome": "होम",
   "navExplore": "खोजें",
@@ -178,7 +178,7 @@
   "resetConfirmTitle": "रीसेट करें?",
   "resetConfirmDesc": "यह सभी डिफ़ॉल्ट रेसिपी को मूल स्थिति में ले आएगा।",
   "about": "परिचय",
-  "aboutCookMate": "CookMate के बारे में",
+  "aboutCookMate": "Food CHART के बारे में",
   "versionText": "संस्करण 2.0.0 • भारतीय पाक संस्करण",
   "selectLanguageTitle": "भाषा चुनें",
   "english": "English",
@@ -251,5 +251,15 @@
   "catIngredientNote": "सामग्री नोट",
   "catMalnadRecipe": "मलनाड रेसिपी",
   "catPersonalNote": "व्यक्तिगत नोट",
-  "catOther": "अन्य"
+  "catOther": "अन्य",
+  "shareRecipe": "रेसिपी शेयर करें",
+  "shareToWhatsApp": "WhatsApp पर शेयर करें",
+  "shareMoreOptions": "अन्य शेयर विकल्प",
+  "copyRecipeText": "रेसिपी टेक्स्ट कॉपी करें",
+  "recipeCopiedToClipboard": "रेसिपी क्लिपबोर्ड पर कॉपी की गई! 📋",
+  "shareRecipeSubtitle": "इस स्वादिष्ट डिश को WhatsApp पर परिवार और दोस्तों के साथ शेयर करें",
+  "shareApp": "Food CHART ऐप शेयर करें",
+  "shareAppSubtitle": "WhatsApp, Quick Share, Bluetooth और अन्य माध्यमों से शेयर करें",
+  "shareAppQuickShareBluetooth": "Quick Share, Bluetooth और अन्य",
+  "shareAppLinkCopied": "Food CHART लिंक क्लिपबोर्ड पर कॉपी किया गया! 📋"
 }

@@ -1,6 +1,7 @@
+
 <?php
 /**
- * CookMate API - Notification Details Endpoint
+ * Food CHART API - Notification Details Endpoint
  * GET /api/notifications/details.php?id=123
  */
 
@@ -17,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $pdo = get_db_connection();
 ensure_notifications_tables_exist($pdo);
-$user = get_authenticated_user($pdo, false, true, 'CookMate Foodie');
+$user = get_authenticated_user($pdo, false, true, 'Food CHART Foodie');
 $userId = $user ? (int)$user['id'] : 1;
 
 $notifId = isset($_GET['id']) ? (int)$_GET['id'] : 0;

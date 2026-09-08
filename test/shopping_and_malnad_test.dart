@@ -5,13 +5,14 @@ import 'package:cookmate/features/recipes/domain/entities/recipe.dart';
 
 void main() {
   group('CookMate 50 Recipes & Malnad Special Tests', () {
-    test('SeedData contains exactly 50 recipes with unique IDs', () {
+    test('SeedData contains exactly 120 recipes with unique IDs', () {
       final recipes = SeedData.recipes;
-      expect(recipes.length, equals(50));
+      expect(recipes.length, equals(120));
 
       final ids = recipes.map((r) => r['id'] as String).toSet();
-      expect(ids.length, equals(50), reason: 'All recipe IDs must be unique');
+      expect(ids.length, equals(120), reason: 'All recipe IDs must be unique');
     });
+
 
     test('SeedData contains 50 authentic Malnad Special recipes', () {
       final recipes = SeedData.recipes;

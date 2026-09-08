@@ -142,7 +142,7 @@ try {
     $topTags = $pdo->query("SELECT name, usage_count FROM tags ORDER BY usage_count DESC LIMIT 15")->fetchAll();
 
     if ($isCli) {
-        echo "=== COOKMATE HASHTAG MIGRATION SUCCESS ===\n";
+        echo "=== FOOD CHART HASHTAG MIGRATION SUCCESS ===\n";
         echo "Processed Recipes: $migratedCount\n";
         echo "Created Links: $linksCount\n";
         echo "\nTop Popular Hashtags:\n";

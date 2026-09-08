@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate REST API - Unified Search Endpoint
+ * Food CHART REST API - Unified Search Endpoint
  * 
  * Supports:
  * - Normal text search: ?q=rice

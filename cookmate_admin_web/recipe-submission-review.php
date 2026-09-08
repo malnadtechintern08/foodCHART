@@ -1,7 +1,7 @@
 <?php
 /**
- * CookMate Web Admin - Recipe Submission Review & Approval Interface
- * Native CookMate Design System (Zero external Bootstrap dependencies)
+ * Food CHART Web Admin - Recipe Submission Review & Approval Interface
+ * Native Food CHART Design System (Zero external Bootstrap dependencies)
  */
 
 require_once __DIR__ . '/config/db.php';
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 7. Send personal notification to recipe owner
             create_system_notification($pdo, [
                 'title'               => '🎉 Your Recipe Is Live!',
-                'message'             => 'Your recipe "' . $sub['recipe_name'] . '" has been approved and published on CookMate. Tap to view your recipe.',
+                'message'             => 'Your recipe "' . $sub['recipe_name'] . '" has been approved and published on Food CHART. Tap to view your recipe.',
                 'type'                => 'recipe_approved',
                 'target_type'         => 'specific_user',
                 'target_user_id'      => $sub['user_id'],
@@ -194,11 +194,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'created_by_admin_id' => 1
             ]);
 
-            // Send notification to all other CookMate users (owner is excluded to prevent duplicate)
+            // Send notification to all other Food CHART users (owner is excluded to prevent duplicate)
             if (!isset($_POST['notify_community']) || !empty($_POST['notify_community'])) {
                 create_system_notification($pdo, [
                     'title'               => '🍲 New Recipe Added',
-                    'message'             => '"' . $sub['recipe_name'] . '" is now available on CookMate. Tap to explore the recipe.',
+                    'message'             => '"' . $sub['recipe_name'] . '" is now available on Food CHART. Tap to explore the recipe.',
                     'type'                => 'new_recipe',
                     'target_type'         => 'all_except_user',
                     'target_user_id'      => $sub['user_id'],
@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
 
-            set_flash_message('success', "🎉 Recipe <strong>" . htmlspecialchars($sub['recipe_name']) . "</strong> was successfully approved and published into CookMate! (Recipe ID: $newRecipeId)");
+            set_flash_message('success', "🎉 Recipe <strong>" . htmlspecialchars($sub['recipe_name']) . "</strong> was successfully approved and published into Food CHART! (Recipe ID: $newRecipeId)");
             header("Location: " . BASE_URL . "/recipe-submission-review.php?id=" . $submissionId);
             exit;
 
@@ -293,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 create_system_notification($pdo, [
                     'title'               => '📝 Changes Requested',
-                    'message'             => 'CookMate Admin requested changes to your recipe "' . $sub['recipe_name'] . '". Tap to edit and resubmit: ' . $notes,
+                    'message'             => 'Food CHART Admin requested changes to your recipe "' . $sub['recipe_name'] . '". Tap to edit and resubmit: ' . $notes,
                     'type'                => 'changes_requested',
                     'target_type'         => 'specific_user',
                     'target_user_id'      => $sub['user_id'],
@@ -412,7 +412,7 @@ require_once __DIR__ . '/includes/header.php';
             'under_review' => ['bg' => 'rgba(33, 150, 243, 0.15)', 'color' => '#42A5F5', 'icon' => 'fa-spinner', 'text' => 'Under Review'],
             'changes_requested' => ['bg' => 'rgba(255, 112, 67, 0.15)', 'color' => '#FF7043', 'icon' => 'fa-rotate-left', 'text' => 'Changes Requested'],
             'approved' => ['bg' => 'rgba(76, 175, 80, 0.15)', 'color' => '#81C784', 'icon' => 'fa-check', 'text' => 'Approved (Internal)'],
-            'published' => ['bg' => 'rgba(46, 125, 50, 0.25)', 'color' => '#4CAF50', 'icon' => 'fa-circle-check', 'text' => 'Published in CookMate'],
+            'published' => ['bg' => 'rgba(46, 125, 50, 0.25)', 'color' => '#4CAF50', 'icon' => 'fa-circle-check', 'text' => 'Published in Food CHART'],
             'rejected' => ['bg' => 'rgba(244, 67, 54, 0.15)', 'color' => '#EF5350', 'icon' => 'fa-ban', 'text' => 'Rejected'],
             default => ['bg' => '#222', 'color' => '#CCC', 'icon' => 'fa-question', 'text' => $sub['status']]
         };
@@ -436,7 +436,7 @@ require_once __DIR__ . '/includes/header.php';
             <div>
                 <strong style="color: #81C784; font-size: 15px; display: block;">Public Publication Permission Granted</strong>
                 <span style="color: #DDD; font-size: 13px;">
-                    User explicitly agreed to publish this recipe in the main CookMate collection.
+                    User explicitly agreed to publish this recipe in the main Food CHART collection.
                     <?= $sub['permission_given_at'] ? '(Consent recorded at ' . date('M j, Y H:i', strtotime($sub['permission_given_at'])) . ')' : '' ?>
                 </span>
             </div>
@@ -454,7 +454,7 @@ require_once __DIR__ . '/includes/header.php';
             <div>
                 <strong style="color: #FFA726; font-size: 15px; display: block;">No Public Publication Permission</strong>
                 <span style="color: #DDD; font-size: 13px;">
-                    ⚠️ User has NOT granted permission for public publication. Adding to public CookMate collection is strictly disabled.
+                    ⚠️ User has NOT granted permission for public publication. Adding to public Food CHART collection is strictly disabled.
                 </span>
             </div>
         </div>
@@ -468,10 +468,10 @@ require_once __DIR__ . '/includes/header.php';
 <?php if (!empty($duplicates)): ?>
     <div style="background: rgba(239, 83, 80, 0.12); border: 1px solid rgba(239, 83, 80, 0.4); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
         <div style="display: flex; align-items: center; gap: 10px; color: #EF5350; font-weight: 700; margin-bottom: 6px;">
-            <i class="fa-solid fa-triangle-exclamation"></i> Possible Duplicate Recipe in CookMate
+            <i class="fa-solid fa-triangle-exclamation"></i> Possible Duplicate Recipe in Food CHART
         </div>
         <p style="margin: 0 0 10px; font-size: 13px; color: #DDD;">
-            A recipe with the same or very similar title already exists in the CookMate collection:
+            A recipe with the same or very similar title already exists in the Food CHART collection:
         </p>
         <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #FFF;">
             <?php foreach ($duplicates as $dup): ?>
@@ -653,7 +653,7 @@ require_once __DIR__ . '/includes/header.php';
             <?php if ($sub['status'] === 'published'): ?>
                 <div style="background: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.4); border-radius: 10px; padding: 14px; margin-bottom: 16px; text-align: center;">
                     <i class="fa-solid fa-circle-check" style="font-size: 28px; color: #81C784; margin-bottom: 8px; display: block;"></i>
-                    <strong style="color: #81C784; display: block; font-size: 15px;">Published in CookMate</strong>
+                    <strong style="color: #81C784; display: block; font-size: 15px;">Published in Food CHART</strong>
                     <span style="color: #BBB; font-size: 12.5px; display: block; margin: 4px 0 10px;">
                         Recipe ID: <code><?= htmlspecialchars($sub['published_recipe_id']) ?></code>
                     </span>
@@ -701,7 +701,7 @@ require_once __DIR__ . '/includes/header.php';
             </h4>
             <div style="margin-bottom: 10px;">
                 <span style="color: var(--cm-text-muted); display: block; font-size: 11.5px;">User Name:</span>
-                <strong style="color: #FFF; font-size: 14px;"><?= htmlspecialchars($sub['user_display_name'] ?? 'CookMate User') ?></strong>
+                <strong style="color: #FFF; font-size: 14px;"><?= htmlspecialchars($sub['user_display_name'] ?? 'Food CHART User') ?></strong>
             </div>
             <div style="margin-bottom: 10px;">
                 <span style="color: var(--cm-text-muted); display: block; font-size: 11.5px;">Public Display Name:</span>
@@ -726,7 +726,7 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <!-- ==========================================================================
-     Native CookMate Modals (Zero Bootstrap dependency)
+     Native Food CHART Modals (Zero Bootstrap dependency)
      ========================================================================== -->
 
 <!-- Request Changes Modal -->
@@ -775,7 +775,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="cm-modal-body">
                 <label class="form-label" style="font-size: 12px; color: var(--cm-text-muted); font-weight: 700; text-transform: uppercase;">Primary Rejection Reason</label>
                 <select name="rejection_preset" class="form-control" style="margin-bottom: 12px;">
-                    <option value="Duplicate Recipe">Duplicate recipe already in CookMate</option>
+                    <option value="Duplicate Recipe">Duplicate recipe already in Food CHART</option>
                     <option value="Incomplete Instructions">Incomplete or unclear cooking instructions</option>
                     <option value="Poor Image Quality">Low quality or inappropriate recipe image</option>
                     <option value="Incorrect Information">Inaccurate ingredients or preparation measurements</option>
@@ -816,7 +816,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div>
                         <span style="color: var(--cm-text-muted); font-size: 12px; display: block; text-transform: uppercase; font-weight: 700;">Submitted By</span>
-                        <strong style="color: #FFB74D; font-size: 14px;"><?= htmlspecialchars($sub['user_display_name'] ?? 'CookMate User') ?></strong>
+                        <strong style="color: #FFB74D; font-size: 14px;"><?= htmlspecialchars($sub['user_display_name'] ?? 'Food CHART User') ?></strong>
                     </div>
                 </div>
 
@@ -824,7 +824,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div style="font-weight: 600; color: #FFF; margin-bottom: 6px;">After publication:</div>
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
                         <i class="fa-solid fa-check" style="color: #4CAF50; font-size: 12px;"></i>
-                        <span>Recipe will become available to all CookMate users in the main catalog.</span>
+                        <span>Recipe will become available to all Food CHART users in the main catalog.</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
                         <i class="fa-solid fa-bell" style="color: #64B5F6; font-size: 12px;"></i>
@@ -839,7 +839,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div style="background: rgba(76, 175, 80, 0.08); border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 8px; padding: 12px;">
                     <label style="display: flex; align-items: center; gap: 10px; margin: 0; cursor: pointer; color: #FFF; font-size: 13.5px; font-weight: 600;">
                         <input type="checkbox" name="notify_community" value="1" checked style="width: 18px; height: 18px; accent-color: var(--cm-primary); cursor: pointer;">
-                        <span>Notify CookMate users about this new recipe</span>
+                        <span>Notify Food CHART users about this new recipe</span>
                     </label>
                 </div>
             </div>

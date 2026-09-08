@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate API - User Notifications Endpoint
+ * Food CHART API - User Notifications Endpoint
  * GET  /api/notifications/index.php?page=1&limit=20&filter=unread
  * POST /api/notifications/index.php (Mark read fallback)
  */
@@ -18,8 +18,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $pdo = get_db_connection();
 ensure_notifications_tables_exist($pdo);
-$user = get_authenticated_user($pdo, false, true, 'CookMate Foodie');
+$user = get_authenticated_user($pdo, false, true, 'Food CHART Foodie');
 $userId = $user ? (int)$user['id'] : 1;
+
+// Handle DELETE: Dismiss notification or clear all
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $raw = file_get_contents('php://input');
+    $input = json_decode($raw, true) ?? [];
+    $notifId = (int)($input['notification_id'] ?? $input['id'] ?? $_GET['id'] ?? 0);
+    $clearAll = !empty($input['clear_all']) || !empty($input['all']) || (isset($_GET['clear_all']) && $_GET['clear_all'] == '1');
+
+    if ($clearAll) {
+        $deleted = dismiss_all_user_notifications($pdo, $userId);
+    } elseif ($notifId > 0) {
+        $deleted = dismiss_user_notification($pdo, $notifId, $userId);
+    }
+    $unreadCount = get_user_unread_count($pdo, $userId);
+    json_response([
+        'success'      => true,
+        'message'      => 'Notification(s) deleted successfully.',
+        'unread_count' => $unreadCount
+    ]);
+}
 
 // Handle POST (Mark read compatibility)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - Complete In-App Notification Center & Mobile App Access Hub
+ * Food CHART Web Admin - Complete In-App Notification Center & Mobile App Access Hub
  * Features:
  * 1. Mobile App Simulator & In-App Live Preview with real-time bell badge & animations
  * 2. User Perspective Switcher (View app experience as Abhishek, Priya, Chef Bharath, etc.)
@@ -15,6 +15,17 @@ require_once __DIR__ . '/includes/notification_functions.php';
 
 $pdo = get_db_connection();
 ensure_notifications_tables_exist($pdo);
+
+// Auto-purge retired weekend challenge notifications
+try {
+    $weekendIds = $pdo->query("SELECT id FROM notifications WHERE title LIKE '%Weekend Culinary Challenge%' OR title LIKE '%Food CHART Weekend%' OR title LIKE '%Food CHART Weekend%'")->fetchAll(PDO::FETCH_COLUMN);
+    if (!empty($weekendIds)) {
+        $inClause = implode(',', array_map('intval', $weekendIds));
+        $pdo->exec("DELETE FROM user_notifications WHERE notification_id IN ($inClause)");
+        $pdo->exec("DELETE FROM notifications WHERE id IN ($inClause)");
+    }
+} catch (Exception $e) {}
+
 $pageTitle = 'App Notifications Hub';
 $currentPage = 'notifications.php';
 
@@ -41,13 +52,13 @@ if (isset($_POST['action']) && $_POST['action'] === 'quick_push') {
 
         case 'announcement':
             $payload = [
-                'title'               => '📢 CookMate Weekend Culinary Challenge!',
-                'message'             => 'Submit your authentic regional recipes this weekend to get featured on CookMate Trending & win badges!',
+                'title'               => '📢 Food CHART Community Culinary Update',
+                'message'             => 'Explore newly featured heritage recipes and authentic chef tips from our vibrant cooking community!',
                 'type'                => 'admin_announcement',
                 'target_type'         => 'all',
-                'action_label'        => 'Join Challenge',
+                'action_label'        => 'Explore Community',
                 'related_type'        => 'feature',
-                'related_id'          => 'submissions',
+                'related_id'          => 'search',
                 'status'              => 'active',
                 'created_by_admin_id' => 1
             ];
@@ -56,7 +67,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'quick_push') {
         case 'recipe_approved':
             $payload = [
                 'title'               => '🎉 Your Recipe Was Approved & Published!',
-                'message'             => 'Congratulations! Your submission has been verified by the CookMate culinary team and is now live.',
+                'message'             => 'Congratulations! Your submission has been verified by the Food CHART culinary team and is now live.',
                 'type'                => 'recipe_approved',
                 'target_type'         => 'specific_user',
                 'target_user_id'      => $targetUserId,
@@ -85,7 +96,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'quick_push') {
 
         case 'new_feature':
             $payload = [
-                'title'               => '🚀 CookMate Voice Cooking Timer',
+                'title'               => '🚀 Food CHART Voice Cooking Timer',
                 'message'             => 'You can now run hands-free cooking timers directly from recipe detail steps!',
                 'type'                => 'new_feature',
                 'target_type'         => 'all',
@@ -101,7 +112,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'quick_push') {
     if ($payload) {
         try {
             $newId = create_system_notification($pdo, $payload);
-            set_flash_message('success', "🚀 Notification #$newId successfully pushed to CookMate mobile app!");
+            set_flash_message('success', "🚀 Notification #$newId successfully pushed to Food CHART mobile app!");
         } catch (Exception $e) {
             set_flash_message('danger', "Failed to push notification: " . $e->getMessage());
         }
@@ -139,6 +150,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete') {
     $delId = (int)($_GET['id'] ?? 0);
     if ($delId > 0) {
         try {
+            $pdo->prepare("DELETE FROM user_notifications WHERE notification_id = ?")->execute([$delId]);
             $stmt = $pdo->prepare("DELETE FROM notifications WHERE id = ?");
             $stmt->execute([$delId]);
             set_flash_message('success', "Notification #$delId was permanently deleted.");
@@ -499,7 +511,7 @@ require_once __DIR__ . '/includes/header.php';
             <span style="background: rgba(229, 9, 21, 0.15); color: var(--cm-primary); border: 1px solid var(--cm-primary); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; text-transform: uppercase;">
                 <i class="fa-solid fa-mobile-screen"></i> In-App Notification Hub
             </span>
-            <span style="color: var(--cm-text-muted); font-size: 13px;">CookMate Mobile Flutter Client Sync</span>
+            <span style="color: var(--cm-text-muted); font-size: 13px;">Food CHART Mobile Flutter Client Sync</span>
         </div>
         <h2 style="font-size: 28px; font-weight: 800; margin: 0; color: #FFF;">
             App Notifications & Push Control Center
@@ -517,7 +529,7 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <!-- ========================================================================= -->
-<!-- SECTION 1: COOKMATE MOBILE APP LIVE EXPERIENCE & PUSH CONTROL CONSOLE     -->
+<!-- SECTION 1: FOOD CHART MOBILE APP LIVE EXPERIENCE & PUSH CONTROL CONSOLE   -->
 <!-- ========================================================================= -->
 <div class="app-simulator-wrapper">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--cm-border); padding-bottom: 16px;">
@@ -527,7 +539,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div>
                 <h3 style="font-size: 18px; margin: 0; font-weight: 800; color: #FFF;">
-                    CookMate Mobile App Simulator
+                    Food CHART Mobile App Simulator
                 </h3>
                 <span style="font-size: 13px; color: var(--cm-text-secondary);">
                     Real-time in-app experience preview with live animated notification bell & unread counter
@@ -577,14 +589,14 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <!-- CookMate App Top Bar -->
+                <!-- Food CHART App Top Bar -->
                 <div class="phone-app-bar">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <div style="width: 28px; height: 28px; border-radius: 8px; background: #E50915; display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 14px; font-weight: 900;">
                             🔥
                         </div>
                         <span style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; letter-spacing: -0.5px; color: #FFF;">
-                            Cook<span style="color: #E50915;">Mate</span>
+                            Food <span style="color: #E50915;">CHART</span>
                         </span>
                     </div>
 
@@ -713,7 +725,7 @@ require_once __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                 </div>
 
-                <!-- Phone Scrollable Content: View 2 (CookMate Home Feed Simulation) -->
+                <!-- Phone Scrollable Content: View 2 (Food CHART Home Feed Simulation) -->
                 <div id="phoneHomeScreenFeed" class="phone-content-scroll" style="display: none;">
                     <div style="padding: 10px 4px 16px;">
                         <h4 style="font-size: 15px; color: #FFF; margin: 0 0 4px; font-weight: 800;">
@@ -802,7 +814,7 @@ require_once __DIR__ . '/includes/header.php';
                     </span>
                 </div>
                 <p style="font-size: 13px; color: var(--cm-text-secondary); margin-bottom: 16px;">
-                    Trigger high-priority in-app alerts directly into the CookMate database. The phone simulator and user device refresh instantly.
+                    Trigger high-priority in-app alerts directly into the Food CHART database. The phone simulator and user device refresh instantly.
                 </p>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -820,7 +832,7 @@ require_once __DIR__ . '/includes/header.php';
                         </button>
                     </form>
 
-                    <!-- Push 2: Weekend Announcement -->
+                    <!-- Push 2: Community Announcement -->
                     <form method="POST" action="<?= BASE_URL ?>/notifications.php">
                         <input type="hidden" name="action" value="quick_push">
                         <input type="hidden" name="template" value="announcement">
@@ -829,7 +841,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span style="font-size: 22px;">📢</span>
                             <div>
                                 <strong style="display: block; color: #FFF;">Push Announcement</strong>
-                                <span style="font-size: 11px; color: var(--cm-text-muted);">Weekend MasterChef Challenge</span>
+                                <span style="font-size: 11px; color: var(--cm-text-muted);">Community Chef Update</span>
                             </div>
                         </button>
                     </form>
@@ -883,9 +895,9 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                     </div>
                     <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--cm-border); border-radius: 8px; padding: 10px 12px;">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--cm-text-muted); text-transform: uppercase;">Target Database Port</div>
+                        <div style="font-size: 11px; font-weight: 700; color: var(--cm-text-muted); text-transform: uppercase;">Target Database</div>
                         <div style="font-family: monospace; font-size: 12px; color: #4CAF50; margin-top: 4px;">
-                            127.0.0.1:3307 (cookmate_db)
+                            MySQL (Food CHART DB)
                         </div>
                     </div>
                 </div>
@@ -1194,7 +1206,7 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div style="flex: 1; min-width: 0;">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                        <strong id="previewTitle" style="color: #FFF; font-size: 14.5px; font-weight: 700; word-break: break-word;">CookMate Announcement</strong>
+                        <strong id="previewTitle" style="color: #FFF; font-size: 14.5px; font-weight: 700; word-break: break-word;">Food CHART Announcement</strong>
                         <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #FF5252; flex-shrink: 0;" title="Unread indicator"></span>
                     </div>
                     <p id="previewMessage" style="color: #DDD; font-size: 13px; margin: 4px 0 8px; line-height: 1.4; word-break: break-word;">
@@ -1219,7 +1231,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="form-group" style="margin-bottom: 16px;">
                 <label class="form-label">Notification Message <span style="color: var(--cm-primary);">*</span></label>
-                <textarea name="message" id="notif_message" class="form-control" rows="3" required placeholder="Enter clear description for CookMate users..." oninput="updateLivePreview()"></textarea>
+                <textarea name="message" id="notif_message" class="form-control" rows="3" required placeholder="Enter clear description for Food CHART users..." oninput="updateLivePreview()"></textarea>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
@@ -1346,7 +1358,7 @@ function togglePhoneView() {
     if (phoneCurrentView === 'notifications') {
         feed.style.display = 'none';
         home.style.display = 'block';
-        label.innerHTML = '<i class="fa-solid fa-house" style="color: #4CAF50;"></i> CookMate Home Feed';
+        label.innerHTML = '<i class="fa-solid fa-house" style="color: #4CAF50;"></i> Food CHART Home Feed';
         phoneCurrentView = 'home';
     } else {
         home.style.display = 'none';
@@ -1357,7 +1369,7 @@ function togglePhoneView() {
 }
 
 function updateLivePreview() {
-    const title = document.getElementById('notif_title').value.trim() || 'CookMate Notification';
+    const title = document.getElementById('notif_title').value.trim() || 'Food CHART Notification';
     const message = document.getElementById('notif_message').value.trim() || 'Enter notification message to preview here...';
     const type = document.getElementById('notif_type').value || 'general';
     const action = document.getElementById('notif_action_label').value.trim() || 'Tap to Explore';

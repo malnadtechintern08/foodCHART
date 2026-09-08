@@ -1,6 +1,6 @@
 <?php
 /**
- * CookMate Web Admin - FAQ Manager (Full CRUD)
+ * Food CHART Web Admin - FAQ Manager (Full CRUD)
  */
 require_once __DIR__ . '/config/db.php';
 $pdo = get_db_connection();
@@ -246,7 +246,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="form-group" style="margin-bottom: 14px;">
                 <label class="form-label" for="faq_question">Question <span style="color: var(--cm-primary);">*</span></label>
-                <input type="text" id="faq_question" name="question" class="form-control" required placeholder="e.g. Does CookMate work offline?" value="<?= htmlspecialchars($editFaq['question'] ?? '') ?>">
+                <input type="text" id="faq_question" name="question" class="form-control" required placeholder="e.g. Does Food CHART work offline?" value="<?= htmlspecialchars($editFaq['question'] ?? '') ?>">
             </div>
 
             <div class="form-group" style="margin-bottom: 14px;">
