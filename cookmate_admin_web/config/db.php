@@ -264,6 +264,46 @@ function ensure_foodchart_database_sanitized(PDO $pdo): void {
         // 8. Update app_ratings table
         $pdo->exec("UPDATE app_ratings SET feedback = REPLACE(feedback, 'CookMate', 'Food CHART') WHERE feedback LIKE '%CookMate%'");
     } catch (Throwable $e) {}
+
+    // 9. Self-heal recipe submission schema & attribution columns
+    ensure_recipe_submissions_schema($pdo);
+}
+
+/**
+ * Self-healing helper for recipe submissions schema, attribution columns, and default admin.
+ * Ensures recipes table always has required columns across local and remote live databases.
+ */
+function ensure_recipe_submissions_schema(?PDO $pdo): void {
+    if (!$pdo) return;
+    static $alreadyRun = false;
+    if ($alreadyRun) return;
+    $alreadyRun = true;
+
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM recipes")->fetchAll(PDO::FETCH_COLUMN);
+        $toAdd = [
+            'source_type'          => "ALTER TABLE recipes ADD COLUMN source_type VARCHAR(32) NOT NULL DEFAULT 'admin'",
+            'submitted_by_user_id' => "ALTER TABLE recipes ADD COLUMN submitted_by_user_id INT NULL",
+            'submission_id'        => "ALTER TABLE recipes ADD COLUMN submission_id INT NULL",
+            'author_display_name'  => "ALTER TABLE recipes ADD COLUMN author_display_name VARCHAR(100) NULL",
+            'allow_publication'    => "ALTER TABLE recipes ADD COLUMN allow_publication TINYINT(1) NOT NULL DEFAULT 1",
+        ];
+        foreach ($toAdd as $col => $sql) {
+            if (!in_array($col, $cols)) {
+                try {
+                    $pdo->exec($sql);
+                } catch (Throwable $e) {}
+            }
+        }
+    } catch (Throwable $e) {}
+
+    try {
+        // Ensure default admin (id = 1) exists in admins table for foreign keys
+        $adminCount = (int)$pdo->query("SELECT COUNT(*) FROM admins WHERE id = 1")->fetchColumn();
+        if ($adminCount === 0) {
+            $pdo->exec("INSERT IGNORE INTO admins (id, username, name, email, role) VALUES (1, 'admin', 'Food CHART Admin', 'admin@foodchart.com', 'superadmin')");
+        }
+    } catch (Throwable $e) {}
 }
 
 function sanitize($data) {

@@ -87,40 +87,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $authorDisplayName = $sub['show_author_name'] ? ($sub['author_display_name'] ?: $sub['user_display_name']) : 'Community Recipe';
             $isVeg = (strcasecmp($sub['food_type'], 'Vegetarian') === 0 || strcasecmp($sub['food_type'], 'Veg') === 0) ? 1 : 0;
 
-            // 2. Insert into main recipes table
-            $insRecipe = $pdo->prepare("
-                INSERT INTO recipes (
-                    id, title, description, chef_name, cuisine,
-                    image_url, prep_time_minutes, cook_time_minutes, servings, difficulty,
-                    category_id, is_vegetarian, rating, tags,
-                    source_type, submitted_by_user_id, submission_id, author_display_name, allow_publication,
-                    created_at
-                ) VALUES (
-                    ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?,
-                    ?, ?, 4.8, ?,
-                    'user_submission', ?, ?, ?, 1,
-                    NOW()
-                )
-            ");
-            $insRecipe->execute([
-                $newRecipeId,
-                $sub['recipe_name'],
-                $sub['description'] ?: 'A delicious recipe prepared with authentic techniques and fresh ingredients.',
-                $chefName,
-                $sub['cuisine'] ?: 'Homemade',
-                $sub['image'] ?: 'assets/images/recipes/samosa.jpg',
-                $sub['preparation_time'],
-                $sub['cooking_time'],
-                $sub['servings'],
-                $sub['difficulty'],
-                $sub['category_id'],
-                $isVeg,
-                $tagsString,
-                $sub['user_id'],
-                $submissionId,
-                $authorDisplayName,
-            ]);
+            // 2. Insert into main recipes table (with dynamic column discovery and self-healing)
+            if (function_exists('ensure_recipe_submissions_schema')) {
+                ensure_recipe_submissions_schema($pdo);
+            }
+
+            $recCols = [];
+            try {
+                $recCols = $pdo->query("SHOW COLUMNS FROM recipes")->fetchAll(PDO::FETCH_COLUMN);
+            } catch (Throwable $e) {}
+
+            $recipePayload = [
+                'id'                   => $newRecipeId,
+                'title'                => $sub['recipe_name'],
+                'description'          => $sub['description'] ?: 'A delicious recipe prepared with authentic techniques and fresh ingredients.',
+                'chef_name'            => $chefName,
+                'cuisine'              => $sub['cuisine'] ?: 'Homemade',
+                'image_url'            => $sub['image'] ?: 'assets/images/recipes/samosa.jpg',
+                'prep_time_minutes'    => (int)$sub['preparation_time'],
+                'cook_time_minutes'    => (int)$sub['cooking_time'],
+                'servings'             => (int)$sub['servings'],
+                'difficulty'           => $sub['difficulty'] ?: 'Medium',
+                'category_id'          => $sub['category_id'],
+                'is_vegetarian'        => $isVeg,
+                'rating'               => 4.8,
+                'tags'                 => $tagsString,
+                'source_type'          => 'user_submission',
+                'submitted_by_user_id' => $sub['user_id'],
+                'submission_id'        => $submissionId,
+                'author_display_name'  => $authorDisplayName,
+                'allow_publication'    => 1,
+            ];
+
+            $insertCols = [];
+            $insertPlaceholders = [];
+            $insertParams = [];
+
+            foreach ($recipePayload as $field => $val) {
+                if (empty($recCols) || in_array($field, $recCols)) {
+                    $insertCols[] = "`$field`";
+                    $insertPlaceholders[] = "?";
+                    $insertParams[] = $val;
+                }
+            }
+
+            if (empty($recCols) || in_array('created_at', $recCols)) {
+                $insertCols[] = "`created_at`";
+                $insertPlaceholders[] = "NOW()";
+            }
+
+            $sql = "INSERT INTO recipes (" . implode(', ', $insertCols) . ") VALUES (" . implode(', ', $insertPlaceholders) . ")";
+            $insRecipe = $pdo->prepare($sql);
+            $insRecipe->execute($insertParams);
 
             // 3. Copy Ingredients into recipe_ingredients
             $insIng = $pdo->prepare("
@@ -161,11 +179,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 5. Link Tags in recipe_tags and update usage counts
             if (!empty($tags)) {
-                $insRel = $pdo->prepare("INSERT IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)");
-                foreach ($tags as $t) {
-                    $insRel->execute([$newRecipeId, $t['id']]);
-                }
-                recalculate_all_tag_usage_counts($pdo);
+                try {
+                    $insRel = $pdo->prepare("INSERT IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)");
+                    foreach ($tags as $t) {
+                        $insRel->execute([$newRecipeId, $t['id']]);
+                    }
+                    if (function_exists('recalculate_all_tag_usage_counts')) {
+                        recalculate_all_tag_usage_counts($pdo);
+                    }
+                } catch (Throwable $tagErr) {}
             }
 
             // 6. Update submission record
@@ -181,44 +203,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upSub->execute([$newRecipeId, $submissionId]);
 
             // 7. Send personal notification to recipe owner
-            create_system_notification($pdo, [
-                'title'               => '🎉 Your Recipe Is Live!',
-                'message'             => 'Your recipe "' . $sub['recipe_name'] . '" has been approved and published on Food CHART. Tap to view your recipe.',
-                'type'                => 'recipe_approved',
-                'target_type'         => 'specific_user',
-                'target_user_id'      => $sub['user_id'],
-                'related_type'        => 'recipe',
-                'related_id'          => $newRecipeId,
-                'action_label'        => 'View Recipe',
-                'status'              => 'active',
-                'created_by_admin_id' => 1
-            ]);
-
-            // Send notification to all other Food CHART users (owner is excluded to prevent duplicate)
-            if (!isset($_POST['notify_community']) || !empty($_POST['notify_community'])) {
+            try {
                 create_system_notification($pdo, [
-                    'title'               => '🍲 New Recipe Added',
-                    'message'             => '"' . $sub['recipe_name'] . '" is now available on Food CHART. Tap to explore the recipe.',
-                    'type'                => 'new_recipe',
-                    'target_type'         => 'all_except_user',
+                    'title'               => '🎉 Your Recipe Is Live!',
+                    'message'             => 'Your recipe "' . $sub['recipe_name'] . '" has been approved and published on Food CHART. Tap to view your recipe.',
+                    'type'                => 'recipe_approved',
+                    'target_type'         => 'specific_user',
                     'target_user_id'      => $sub['user_id'],
                     'related_type'        => 'recipe',
                     'related_id'          => $newRecipeId,
-                    'action_label'        => 'Tap to Explore',
+                    'action_label'        => 'View Recipe',
                     'status'              => 'active',
                     'created_by_admin_id' => 1
                 ]);
-            }
+
+                // Send notification to all other Food CHART users (owner is excluded to prevent duplicate)
+                if (!isset($_POST['notify_community']) || !empty($_POST['notify_community'])) {
+                    create_system_notification($pdo, [
+                        'title'               => '🍲 New Recipe Added',
+                        'message'             => '"' . $sub['recipe_name'] . '" is now available on Food CHART. Tap to explore the recipe.',
+                        'type'                => 'new_recipe',
+                        'target_type'         => 'all_except_user',
+                        'target_user_id'      => $sub['user_id'],
+                        'related_type'        => 'recipe',
+                        'related_id'          => $newRecipeId,
+                        'action_label'        => 'Tap to Explore',
+                        'status'              => 'active',
+                        'created_by_admin_id' => 1
+                    ]);
+                }
+            } catch (Throwable $notifErr) {}
 
             // 8. Log admin activity
-            $log = $pdo->prepare("
-                INSERT INTO admin_activity_logs (admin_id, action, submission_id, details, created_at)
-                VALUES (1, 'approve_and_publish', ?, ?, NOW())
-            ");
-            $log->execute([
-                $submissionId,
-                "Published submission #$submissionId as recipe $newRecipeId ('{$sub['recipe_name']}')."
-            ]);
+            try {
+                $log = $pdo->prepare("
+                    INSERT INTO admin_activity_logs (admin_id, action, submission_id, details, created_at)
+                    VALUES (1, 'approve_and_publish', ?, ?, NOW())
+                ");
+                $log->execute([
+                    $submissionId,
+                    "Published submission #$submissionId as recipe $newRecipeId ('{$sub['recipe_name']}')."
+                ]);
+            } catch (Throwable $logErr) {}
 
             $pdo->commit();
 

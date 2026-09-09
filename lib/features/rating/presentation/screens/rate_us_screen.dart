@@ -302,7 +302,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
                               },
                               behavior: HitTestBehavior.opaque,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 3),
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
                                 child: AnimatedScale(
                                   scale: isFilled ? 1.15 : 1.0,
                                   duration: const Duration(milliseconds: 180),
@@ -328,12 +328,15 @@ class _RateUsScreenState extends State<RateUsScreen> {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: starColor.withValues(alpha: 0.3)),
                         ),
-                        child: Text(
-                          _getStarLabel(_selectedStars),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: starColor,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            _getStarLabel(_selectedStars),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: starColor,
+                            ),
                           ),
                         ),
                       ),
@@ -546,7 +549,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
                           ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 20 + MediaQuery.paddingOf(context).bottom),
               ],
             ),
           ),

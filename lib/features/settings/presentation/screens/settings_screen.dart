@@ -59,7 +59,7 @@ class SettingsScreen extends ConsumerWidget {
         title: Text(l10n.settingsTitle),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 32 + MediaQuery.paddingOf(context).bottom),
         children: [
           // Personal Notes Shortcut
           Text(
@@ -400,7 +400,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     child: const Icon(Icons.star_rounded, color: Color(0xFFFFB300), size: 20),
                   ),
-                  title: const Text('⭐ Rate Food CHART', style: TextStyle(fontWeight: FontWeight.w700)),
+                  title: const Text('Rate Food CHART', style: TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: const Text('Share your love & review on Google Play'),
                   trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () => showCookMateRatingPopup(context, isManual: true),

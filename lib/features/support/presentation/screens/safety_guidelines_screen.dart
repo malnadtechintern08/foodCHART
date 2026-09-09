@@ -34,7 +34,7 @@ class SafetyGuidelinesScreen extends ConsumerWidget {
             color: AppColors.primary,
             onRefresh: () async => ref.invalidate(supportPageProvider('safety-guidelines')),
             child: ListView(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 32 + MediaQuery.paddingOf(context).bottom),
               children: [
                 // Header Banner
                 Container(

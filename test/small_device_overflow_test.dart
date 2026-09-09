@@ -6,6 +6,12 @@ import 'package:cookmate/features/categories/domain/entities/category.dart';
 import 'package:cookmate/features/categories/presentation/widgets/category_card_widget.dart';
 import 'package:cookmate/features/recipes/domain/entities/recipe.dart';
 import 'package:cookmate/features/recipes/presentation/screens/home_screen.dart';
+import 'package:cookmate/features/cooking_mode/presentation/screens/cooking_mode_screen.dart';
+import 'package:cookmate/features/rating/presentation/widgets/rating_popup_dialog.dart';
+import 'package:cookmate/features/rating/services/rating_service.dart';
+import 'package:cookmate/features/recipes/domain/entities/instruction_step.dart';
+import 'package:cookmate/features/recipes/presentation/screens/recipe_detail_screen.dart';
+import 'package:cookmate/features/recipes/presentation/providers/recipe_providers.dart';
 import 'package:cookmate/features/recipes/presentation/widgets/featured_recipe_card.dart';
 import 'package:cookmate/features/recipes/presentation/widgets/recipe_card.dart';
 import 'package:cookmate/features/recipes/presentation/widgets/recipe_filter_bottom_sheet.dart';
@@ -14,9 +20,11 @@ import 'package:cookmate/features/splash/presentation/screens/splash_screen.dart
 import 'package:cookmate/features/support/presentation/screens/contact_us_screen.dart';
 import 'package:cookmate/features/support/presentation/screens/safety_guidelines_screen.dart';
 import 'package:cookmate/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   final sampleRecipe = Recipe(
     id: 'recipe_test_1',
@@ -266,5 +274,178 @@ void main() {
         expect(tester.takeException(), isNull, reason: 'SplashScreen overflow on ${size.width}x${size.height}');
       });
     }
+  });
+
+  group('Navigation Bar Inset & Edge-to-Edge Compatibility Tests', () {
+    const navBarHeight = 56.0;
+    const testInsets = EdgeInsets.only(bottom: navBarHeight);
+
+    testWidgets('CookingModeScreen respects bottom navigation bar inset on 360x640', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      final recipeWithSteps = sampleRecipe.copyWith(
+        instructions: const [
+          InstructionStep(stepNumber: 1, instruction: 'Clean and dice fresh vegetables'),
+          InstructionStep(stepNumber: 2, instruction: 'Sauté in traditional earthen pot'),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.darkTheme,
+            home: MediaQuery(
+              data: const MediaQueryData(
+                size: Size(360, 640),
+                padding: testInsets,
+              ),
+              child: CookingModeScreen(recipe: recipeWithSteps),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final nextStepFinder = find.byType(ElevatedButton);
+      expect(nextStepFinder, findsOneWidget);
+
+      final buttonBottom = tester.getBottomRight(nextStepFinder).dy;
+      expect(buttonBottom, lessThanOrEqualTo(640.0 - navBarHeight));
+    });
+
+    testWidgets('RecipeDetailScreen bottomSheet respects bottom inset on 360x640', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            recipeDetailProvider('recipe_test_1').overrideWith((ref) => Future.value(sampleRecipe)),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.darkTheme,
+            home: MediaQuery(
+              data: const MediaQueryData(
+                size: Size(360, 640),
+                padding: testInsets,
+              ),
+              child: const RecipeDetailScreen(recipeId: 'recipe_test_1'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final cookModeButton = find.text('Start Interactive Cooking Mode');
+      expect(cookModeButton, findsOneWidget);
+
+      final buttonBottom = tester.getBottomRight(cookModeButton).dy;
+      expect(buttonBottom, lessThanOrEqualTo(640.0 - navBarHeight));
+    });
+
+    testWidgets('RatingPopupDialog 5-star selection zero overflow with bottom inset', (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      RatingService.instance.isDialogShowing = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.darkTheme,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => Center(
+                child: ElevatedButton(
+                  onPressed: () => showCookMateRatingPopup(
+                    context,
+                    isManual: true,
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('star_5')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('star_5')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('rate_playstore_button')), findsOneWidget);
+
+      await tester.ensureVisible(find.byKey(const Key('maybe_later_button')));
+      await tester.tap(find.byKey(const Key('maybe_later_button')));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('RatingPopupDialog 2-star selection zero overflow with bottom inset', (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      RatingService.instance.isDialogShowing = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.darkTheme,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => Center(
+                child: ElevatedButton(
+                  onPressed: () => showCookMateRatingPopup(
+                    context,
+                    isManual: true,
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('star_2')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('star_2')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('send_feedback_button')), findsOneWidget);
+
+      await tester.ensureVisible(find.byKey(const Key('maybe_later_button')));
+      await tester.tap(find.byKey(const Key('maybe_later_button')));
+      await tester.pumpAndSettle();
+    });
   });
 }

@@ -141,7 +141,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
         color: AppColors.primary,
         onRefresh: () async => ref.invalidate(supportPageProvider('contact-us')),
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 32 + MediaQuery.paddingOf(context).bottom),
           children: [
             // Hero Intro Banner
             Container(

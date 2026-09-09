@@ -88,7 +88,7 @@ class MySubmissionsScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(mySubmissionsProvider),
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 90 + MediaQuery.paddingOf(context).bottom),
               itemCount: submissions.length,
               separatorBuilder: (context, index) => const SizedBox(height: 14),
               itemBuilder: (context, index) {

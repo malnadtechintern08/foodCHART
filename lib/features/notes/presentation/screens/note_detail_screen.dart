@@ -125,8 +125,10 @@ class NoteDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+          body: SafeArea(
+            top: false,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -232,6 +234,7 @@ class NoteDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 40),
               ],
             ),
+          ),
           ),
         );
       },

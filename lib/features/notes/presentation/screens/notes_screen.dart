@@ -272,7 +272,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 80 + MediaQuery.paddingOf(context).bottom),
                   itemCount: notes.length,
                   itemBuilder: (context, index) {
                     final note = notes[index];

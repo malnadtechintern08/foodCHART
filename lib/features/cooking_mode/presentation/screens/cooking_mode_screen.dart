@@ -181,51 +181,56 @@ class CookingModeScreen extends ConsumerWidget {
 
             // Bottom Navigation Controls
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurfaceCard : Colors.white,
                 border: Border(
                   top: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
                 ),
               ),
-              child: Row(
-                children: [
-                  if (sessionState.currentStepIndex > 0) ...[
-                    OutlinedButton.icon(
-                      onPressed: sessionNotifier.previousStep,
-                      icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                      label: Text(l10n.previous),
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final isFinishing = currentStepNum == totalSteps;
-                        sessionNotifier.toggleStepCompletion(sessionState.currentStepIndex);
-                        sessionNotifier.nextStep();
-                        if (isFinishing) {
-                          await RatingService.instance.recordMeaningfulAction();
-                          if (context.mounted) {
-                            Future.delayed(const Duration(milliseconds: 600), () {
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Row(
+                    children: [
+                      if (sessionState.currentStepIndex > 0) ...[
+                        OutlinedButton.icon(
+                          onPressed: sessionNotifier.previousStep,
+                          icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                          label: Text(l10n.previous),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final isFinishing = currentStepNum == totalSteps;
+                            sessionNotifier.toggleStepCompletion(sessionState.currentStepIndex);
+                            sessionNotifier.nextStep();
+                            if (isFinishing) {
+                              await RatingService.instance.recordMeaningfulAction();
                               if (context.mounted) {
-                                showCookMateRatingPopup(context, isManual: false);
+                                Future.delayed(const Duration(milliseconds: 600), () {
+                                  if (context.mounted) {
+                                    showCookMateRatingPopup(context, isManual: false);
+                                  }
+                                });
                               }
-                            });
-                          }
-                        }
-                      },
-                      icon: Icon(
-                        currentStepNum == totalSteps ? Icons.celebration_rounded : Icons.arrow_forward_rounded,
-                        size: 20,
+                            }
+                          },
+                          icon: Icon(
+                            currentStepNum == totalSteps ? Icons.celebration_rounded : Icons.arrow_forward_rounded,
+                            size: 20,
+                          ),
+                          label: Text(
+                            currentStepNum == totalSteps ? l10n.finishCooking : l10n.nextStep,
+                            style: const TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                        ),
                       ),
-                      label: Text(
-                        currentStepNum == totalSteps ? l10n.finishCooking : l10n.nextStep,
-                        style: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],

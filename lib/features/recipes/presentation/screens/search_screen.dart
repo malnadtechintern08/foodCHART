@@ -180,7 +180,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final popularTagsAsync = ref.watch(popularTagsProvider);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + MediaQuery.paddingOf(context).bottom),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -432,8 +432,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           );
         }
 
+        final bottomPadding = MediaQuery.paddingOf(context).bottom;
         return ListView.separated(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + bottomPadding),
           itemCount: recipes.length,
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {

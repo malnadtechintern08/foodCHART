@@ -47,7 +47,7 @@ class _RecipeFilterBottomSheetState extends ConsumerState<RecipeFilterBottomShee
           top: 20,
           left: 20,
           right: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          bottom: MediaQuery.paddingOf(context).bottom + MediaQuery.viewInsetsOf(context).bottom + 24,
         ),
         child: SingleChildScrollView(
           child: Column(

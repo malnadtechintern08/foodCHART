@@ -204,7 +204,7 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                   }
 
                   return ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 32 + MediaQuery.paddingOf(context).bottom),
                     itemCount: filtered.length + 1,
                     itemBuilder: (context, index) {
                       if (index == filtered.length) {

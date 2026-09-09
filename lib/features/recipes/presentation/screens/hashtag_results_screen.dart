@@ -241,7 +241,7 @@ class _HashtagResultsScreenState extends ConsumerState<HashtagResultsScreen> {
       color: AppColors.primary,
       child: ListView.separated(
         controller: _scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + MediaQuery.paddingOf(context).bottom),
         itemCount: _recipes.length + (_isLoadingMore ? 1 : 0),
         separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {

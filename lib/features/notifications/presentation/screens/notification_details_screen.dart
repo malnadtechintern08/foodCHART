@@ -121,7 +121,7 @@ class NotificationDetailsScreen extends ConsumerWidget {
 
   Widget _buildContent(BuildContext context, NotificationModel notif, bool isDark) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 32 + MediaQuery.paddingOf(context).bottom),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -173,26 +173,28 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
     final textColor = isDark ? AppColors.textPrimary : AppColors.lightTextPrimary;
     final subtitleColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
 
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      decoration: BoxDecoration(
-        color: surfaceColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
-            blurRadius: 32,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    return SafeArea(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 400, maxHeight: screenHeight * 0.85),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor, width: 1.2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
+              blurRadius: 32,
+              offset: const Offset(0, 12),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             // Close button & Brand Food Icon
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,47 +265,50 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
             const SizedBox(height: 16),
 
             // Interactive 5 Stars
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.surface : AppColors.lightBackground,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: borderColor),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(5, (index) {
-                  final starNum = index + 1;
-                  final isSelected = starNum <= _selectedStars;
-                  return GestureDetector(
-                    key: Key('star_$starNum'),
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => _handleStarTap(starNum),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-                      child: AnimatedScale(
-                        scale: isSelected ? 1.15 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeOutBack,
-                        child: Icon(
-                          isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
-                          size: 34,
-                          color: isSelected ? const Color(0xFFFFB300) : subtitleColor.withValues(alpha: 0.5),
-                          shadows: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: const Color(0xFFFFB300).withValues(alpha: 0.4),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                  )
-                                ]
-                              : null,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.surface : AppColors.lightBackground,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(5, (index) {
+                    final starNum = index + 1;
+                    final isSelected = starNum <= _selectedStars;
+                    return GestureDetector(
+                      key: Key('star_$starNum'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _handleStarTap(starNum),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        child: AnimatedScale(
+                          scale: isSelected ? 1.15 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOutBack,
+                          child: Icon(
+                            isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
+                            size: 34,
+                            color: isSelected ? const Color(0xFFFFB300) : subtitleColor.withValues(alpha: 0.5),
+                            shadows: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: const Color(0xFFFFB300).withValues(alpha: 0.4),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                    )
+                                  ]
+                                : null,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
             ),
             const SizedBox(height: 14),
@@ -347,8 +352,9 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildConditionalContent(
     BuildContext context,
@@ -388,35 +394,41 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
             ),
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 46,
-            child: ElevatedButton.icon(
-              key: const Key('rate_playstore_button'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 46),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                key: const Key('rate_playstore_button'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
                 ),
-                elevation: 0,
-              ),
-              onPressed: _isProcessing ? null : _handlePlayStoreRate,
-              icon: _isProcessing
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.star_rounded, size: 20),
-              label: const Text(
-                '⭐ Rate Food CHART on Play Store',
-                style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w800,
+                onPressed: _isProcessing ? null : _handlePlayStoreRate,
+                icon: _isProcessing
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.star_rounded, size: 20),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '⭐ Rate Food CHART on Play Store',
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -446,27 +458,33 @@ class _RatingPopupDialogState extends State<RatingPopupDialog> with SingleTicker
             ),
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 46,
-            child: ElevatedButton.icon(
-              key: const Key('send_feedback_button'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isDark ? AppColors.surface : AppColors.lightBackground,
-                foregroundColor: isDark ? Colors.white : AppColors.lightTextPrimary,
-                side: BorderSide(color: isDark ? AppColors.border : AppColors.lightBorder),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 46),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                key: const Key('send_feedback_button'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? AppColors.surface : AppColors.lightBackground,
+                  foregroundColor: isDark ? Colors.white : AppColors.lightTextPrimary,
+                  side: BorderSide(color: isDark ? AppColors.border : AppColors.lightBorder),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
                 ),
-                elevation: 0,
-              ),
-              onPressed: _isProcessing ? null : _handleSendFeedback,
-              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18, color: AppColors.primary),
-              label: const Text(
-                'Send Feedback',
-                style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w800,
+                onPressed: _isProcessing ? null : _handleSendFeedback,
+                icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18, color: AppColors.primary),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Send Feedback',
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
               ),
             ),

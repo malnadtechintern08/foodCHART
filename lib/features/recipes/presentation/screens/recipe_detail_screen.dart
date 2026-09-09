@@ -144,6 +144,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
     final recipeAsync = ref.watch(recipeDetailProvider(widget.recipeId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final viewPaddingBottom = MediaQuery.viewPaddingOf(context).bottom;
+    final paddingBottom = MediaQuery.paddingOf(context).bottom;
+    final systemBottomInset = viewPaddingBottom > 0 ? viewPaddingBottom : paddingBottom;
 
     return recipeAsync.when(
       data: (recipe) {
@@ -288,23 +291,30 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryOrange,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    recipe.cuisine.toUpperCase(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5,
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primaryOrange,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        recipe.cuisine.toUpperCase(),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                                const Spacer(),
+                                const SizedBox(width: 8),
                                 Row(
                                   children: [
                                     const Icon(Icons.star_rounded, size: 18, color: AppColors.accentGold),
@@ -428,30 +438,35 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           border: Border.all(color: isDark ? AppColors.border : AppColors.lightBorder),
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            _buildStatItem(
-                              context,
-                              Icons.timer_outlined,
-                              l10n.prepTime,
-                              '${recipe.prepTimeMinutes}m',
-                              AppColors.primaryOrange,
+                            Expanded(
+                              child: _buildStatItem(
+                                context,
+                                Icons.timer_outlined,
+                                l10n.prepTime,
+                                '${recipe.prepTimeMinutes}m',
+                                AppColors.primaryOrange,
+                              ),
                             ),
                             _buildDivider(context),
-                            _buildStatItem(
-                              context,
-                              Icons.local_fire_department_outlined,
-                              l10n.cookTime,
-                              '${recipe.cookTimeMinutes}m',
-                              AppColors.warning,
+                            Expanded(
+                              child: _buildStatItem(
+                                context,
+                                Icons.local_fire_department_outlined,
+                                l10n.cookTime,
+                                '${recipe.cookTimeMinutes}m',
+                                AppColors.warning,
+                              ),
                             ),
                             _buildDivider(context),
-                            _buildStatItem(
-                              context,
-                              Icons.speed_rounded,
-                              l10n.difficulty,
-                              _getDifficultyLabel(recipe.difficulty, l10n),
-                              _getDifficultyColor(recipe.difficulty),
+                            Expanded(
+                              child: _buildStatItem(
+                                context,
+                                Icons.speed_rounded,
+                                l10n.difficulty,
+                                _getDifficultyLabel(recipe.difficulty, l10n),
+                                _getDifficultyColor(recipe.difficulty),
+                              ),
                             ),
                           ],
                         ),
@@ -702,7 +717,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                         ),
                       ],
 
-                      const SizedBox(height: 100),
+                      const SizedBox(height: 140),
                     ],
                   ),
                 ),
@@ -712,32 +727,35 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
           // Bottom Action Bar to launch interactive cooking mode
           bottomSheet: Container(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            width: double.infinity,
             decoration: BoxDecoration(
               color: isDark ? AppColors.cardBackground : AppColors.lightSurfaceCard,
               border: Border(
                 top: BorderSide(color: isDark ? AppColors.border : AppColors.lightBorder),
               ),
             ),
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 16 + systemBottomInset),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryOrange,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
+                icon: const Icon(Icons.restaurant_rounded, color: Colors.white),
+                label: Text(
+                  l10n.startCooking,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                ),
+                onPressed: () {
+                  context.pushNamed(
+                    RouteNames.cookingMode,
+                    extra: recipe,
+                  );
+                },
               ),
-              icon: const Icon(Icons.restaurant_rounded, color: Colors.white),
-              label: Text(
-                l10n.startCooking,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-              ),
-              onPressed: () {
-                context.pushNamed(
-                  RouteNames.cookingMode,
-                  extra: recipe,
-                );
-              },
             ),
           ),
         ),
@@ -764,21 +782,28 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 20, color: color),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary,
+            ),
           ),
         ),
       ],

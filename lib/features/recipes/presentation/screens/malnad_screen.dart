@@ -279,7 +279,7 @@ class _MalnadScreenState extends ConsumerState<MalnadScreen> {
                     ),
                   ),
                   SliverPadding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 24 + MediaQuery.paddingOf(context).bottom),
                     sliver: SliverGrid(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,

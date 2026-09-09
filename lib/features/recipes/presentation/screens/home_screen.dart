@@ -123,11 +123,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             floating: true,
             pinned: false,
             snap: true,
-            expandedHeight: 140,
+            expandedHeight: (100 + MediaQuery.paddingOf(context).top).clamp(140.0, 180.0),
             backgroundColor: isDark ? AppColors.background : AppColors.lightBackground,
             flexibleSpace: FlexibleSpaceBar(
               background: Padding(
-                padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top > 0 ? MediaQuery.paddingOf(context).top + 8 : 44,
+                  left: 16,
+                  right: 16,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
